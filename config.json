@@ -1,0 +1,29 @@
+{
+    "observer": {
+        "lat": 55.67,
+        "lon": 12.5,
+        "elev": 20,
+        "az": 0.2,
+        "alt": 55
+    },
+    "obj": {
+        "pulsar": false,
+        "spectral_line": "H1",
+        "LSR_correct": true
+    },
+    "sdr": {
+        "driver": "rtlsdr",
+        "sample_rate": 2400000,
+        "PPM_offset": 0,
+        "bins": 4096,
+        "fft_num": 1000,
+        "median": 10
+    },
+    "frontend": {
+        "LO": 0
+    },
+    "data": {
+        "write_data": true,
+        "type": "csv"
+    }
+}
