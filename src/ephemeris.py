@@ -83,5 +83,5 @@ class Ephemeris():
         obs_wrt_bary = ICRS(ra=ra*u.deg, dec=dec*u.degree, pm_ra_cosdec=0*u.mas/u.yr, pm_dec=0*u.mas/u.yr, radial_velocity=bary_corr, distance = 1*u.pc)
         LSR_corr = obs_wrt_bary.transform_to(LSRK()).radial_velocity
 
-        return LSR_corr.value
+        return round(LSR_corr.value, 4)
 

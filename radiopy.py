@@ -4,7 +4,7 @@ import argparse, json, sys, os
 import matplotlib.pyplot as plt
 
 sys.path.append("src/")
-import dsp, soapy
+import dsp, soapy, plot
 from soapy import SDR
 import ui.radiopy_ui as ui
 from ephemeris import Ephemeris
@@ -45,6 +45,7 @@ def spectralLine(config):
     ephem = Ephemeris(lat, lon, elev, current_time)
 
     # Get frequency and initialize SDR
+    # TODO Implement DC offset!!
     sdr_driver = config["sdr"]["driver"]
     sample_rate, ppm, bins = config["sdr"]["sample_rate"], config["sdr"]["PPM_offset"], config["sdr"]["bins"]
     line = config["obj"]["spectral_line"]
@@ -77,13 +78,15 @@ def spectralLine(config):
     gal_lon, gal_lat = ephem.galactic(alt, az)
 
     velocities = [ephem.freqToVel(rest_freq, freq) for freq in freqs]
-    LSR_correction = ephem.getLSRCorrection(ra, dec)
+    LSR_correction = ephem.getLSRCorrection(ra, dec) if config["obj"]["LSR_correct"] else 0
     if config["obj"]["LSR_correct"]:
         velocities = velocities - LSR_correction
 
+    plot.plotData(data, velocities, [gal_lon, gal_lat], [ra, dec], LSR_correction, current_time)
+
     # Finally, plot the data
-    plt.plot(velocities, data)
-    plt.show()
+    # plt.plot(velocities, data)
+    # plt.show()
 
 
 if __name__ == "__main__":

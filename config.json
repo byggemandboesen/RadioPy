@@ -1,10 +1,10 @@
 {
     "observer": {
-        "lat": 55.67,
-        "lon": 12.5,
+        "lat": 0.0,
+        "lon": 0.0,
         "elev": 20,
-        "az": 0.2,
-        "alt": 55
+        "az": 0.0,
+        "alt": 0.0
     },
     "obj": {
         "pulsar": false,
@@ -15,15 +15,16 @@
         "driver": "rtlsdr",
         "sample_rate": 2400000,
         "PPM_offset": 0,
-        "bins": 4096,
+        "bins": 2048,
         "fft_num": 1000,
-        "median": 10
+        "median": 10,
+        "shift": false
     },
     "frontend": {
         "LO": 0
     },
     "data": {
-        "write_data": true,
+        "write_data": false,
         "type": "csv"
     }
 }
