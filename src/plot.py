@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
 
-def plotData(data, velocities, eq_coords, gal_coords, lsr, time):
+def plotData(data, velocities, line_name, gal_coords, eq_coords, lsr, time):
     # Create figure and title
     fig = plt.figure(figsize=(10,7))
     fig.suptitle(f"Observation at: {time}", fontsize=16)
@@ -14,8 +14,8 @@ def plotData(data, velocities, eq_coords, gal_coords, lsr, time):
 
     # Plot table with details
     table_ax.axis("off")
-    labels = [r"Galactic $l$/$b$", r"Equatorial $RA$/$Dec$", "LSR correction"]
-    values = [[fr"{gal_coords[0]}$^\circ$ / {gal_coords[1]}$^\circ$", fr"{eq_coords[0]}$^\circ$ / {eq_coords[1]}$^\circ$", f"{-lsr}" + r"$\frac{km}{s}$"]]
+    labels = ["Spectral line", r"Galactic $l$/$b$", r"Equatorial $RA$/$Dec$", "LSR correction"]
+    values = [[line_name, fr"{gal_coords[0]}$^\circ$ / {gal_coords[1]}$^\circ$", fr"{eq_coords[0]}$^\circ$ / {eq_coords[1]}$^\circ$", f"{-lsr}" + r" $\frac{km}{s}$"]]
     color = [colors.to_rgba("b", 0.5)]*len(labels)
     table = table_ax.table(cellText = values, colLabels = labels, colColours = color, cellLoc = "center", loc="center")
     table.auto_set_font_size(False)

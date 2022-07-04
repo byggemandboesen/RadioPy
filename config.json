@@ -13,18 +13,18 @@
     },
     "sdr": {
         "driver": "rtlsdr",
-        "sample_rate": 2400000,
+        "sample_rate": 3200000,
         "PPM_offset": 0,
         "bins": 2048,
         "fft_num": 1000,
         "median": 10,
-        "shift": false
+        "dc_offset": false
     },
     "frontend": {
         "LO": 0
     },
     "data": {
-        "write_data": false,
+        "write_data": true,
         "type": "csv"
     }
 }

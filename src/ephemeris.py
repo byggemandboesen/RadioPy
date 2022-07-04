@@ -13,42 +13,45 @@ class Ephemeris():
         self.QTH = EarthLocation(lat = lat*u.degree, lon=lon*u.degree,height=elev*u.m)
         self.TIME = Time(time)
 
-    def lineToFreq(self, line):
+    def parseSpectralLine(self, line):
         '''
-        Get the frequency from a given spectral line
+        Get the frequency and name of a given spectral line
+        Returns the frequency and name as a touple
         '''
         spectral_lines = {
-            "H1": 1420405752,
-            "OH_1612": 1612231000,
-            "OH_1665": 1665402000,
-            "OH_1667": 1667359000,
-            "OH_1720": 1720530000,
+            "H1": (1420405752, "Hydrogen, 1420MHz"),
+            "OH_1612": (1612231000, "Hydroxyl, 1612MHz"),
+            "OH_1665": (1665402000, "Hydroxyl, 1665MHz"),
+            "OH_1667": (1667359000, "Hydroxyl, 1667MHz"),
+            "OH_1720": (1720530000, "Hydroxyl, 1720MHz"),
         }
 
-        if line not in spectral_lines.keys():
+        if line.upper() not in spectral_lines.keys():
             print("Invalid line name. Please check the README for all spectral line names")
             quit()
         else:
-            return int(spectral_lines[line])
+            return spectral_lines[line.upper()]
         
     def galactic(self, alt, az):
         '''
         Compute galactic coordinates from azimuth and altitude
+        Returns the coordinates as a list [lon,lat]
         '''
         horizontal_coord = AltAz(alt = alt*u.degree, az = az*u.degree, pressure = 0*u.bar, obstime = self.TIME,location=self.QTH)
         gal_coord = horizontal_coord.transform_to(Galactic())
 
         # Return lon (l), lat (b)
-        return round(gal_coord.l.degree, 4), round(gal_coord.b.degree, 4)
+        return [round(gal_coord.l.degree, 4), round(gal_coord.b.degree, 4)]
     
     def equatorial(self, alt, az):
         '''
         Compute equatorial coordinates from azimuth and altitude
+        Returns the coordinates as a list [ra, dec]
         '''
         horizontal_coord = AltAz(alt = alt*u.degree, az = az*u.degree, pressure = 0*u.bar, obstime = self.TIME,location=self.QTH)
         eq_coord = SkyCoord(horizontal_coord.transform_to(ICRS()))
 
-        return round(eq_coord.ra.degree, 4), round(eq_coord.dec.degree, 4)
+        return [round(eq_coord.ra.degree, 4), round(eq_coord.dec.degree, 4)]
     
     def freqToVel(self, rest_freq, freq):
         '''
