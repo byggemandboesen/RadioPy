@@ -1,8 +1,6 @@
 import numpy as np
 
-
 def doFFT(bins, n_bins: int):
-    # TODO Consider doing this for multidimensional array instead for improved speed
     '''
     Perform FFT on the given bins
     '''
@@ -28,6 +26,7 @@ def applyMedian(bins, num: int = 10):
     '''
     Perform median smoothing on the given bins
     '''
+    # TODO Improve this for near edge bins
     for i in range(len(bins)):
             bins[i] = np.mean(bins[i:i+num])
     return bins

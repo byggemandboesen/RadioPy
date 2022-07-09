@@ -7,7 +7,7 @@ import src.soapy as soapy
 # TODO Get screen resolution to scale UI properly
 
 # Run user interface
-def runUI(sdr):
+def runUI():
     dpg.create_context()
     dpg.create_viewport(title='RadioPy - By Victor Boesen', width=650, height=500)
     

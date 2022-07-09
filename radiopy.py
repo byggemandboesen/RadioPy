@@ -12,16 +12,24 @@ from ephemeris import Ephemeris
 
 def main():
     parser = argparse.ArgumentParser(prog="radiopy.py", description="The python solution for radio astronomy with an SDR")
-    # parser.add_argument("-ui", help="Run program with UI", action="store_true", dest="show_ui")
+    parser.add_argument("-ui", help="Run program with UI", action="store_true", dest="show_ui")
     parser.add_argument("-d", help="List available drivers", action="store_true", dest="list_drivers")
+    parser.add_argument("-l", help="Load, and plot, data from a given file path (csv or json)", default="none", type=str, dest="load_data")
     # parser.add_argument("-p", help="Run in pulsar mode at given frequency (in Hz)", default=0, type=int, dest="pulsar")
     args = parser.parse_args()
 
-    # if args.show_ui:
-    #     ui.runUI()
+    if args.show_ui:
+        ui.runUI()
+        quit()
 
     if args.list_drivers:
         print(f"Available drivers:\n{soapy.listDrivers()}")
+        quit()
+
+    # Load data
+    if args.load_data != "none":
+        file_path = args.load_data
+        print("Loading from file")
         quit()
 
     # Read defults from config
@@ -29,7 +37,7 @@ def main():
         parsed_config = json.load(config)
     config.close()
 
-    
+
     # Check if pulsar module should be launched
     if parsed_config["obj"]["pulsar"]:
         print("Starting pulsar module...")
@@ -63,12 +71,15 @@ def spectralLine(config):
     freqs = np.linspace(rest_freq-sample_rate/2-DC_offset, rest_freq+sample_rate/2-DC_offset, bins)
     fft_num = config["sdr"]["fft_num"]
 
+    # start = datetime.utcnow()
     data = np.zeros(bins)
     for i in range(0,fft_num):
-        collected_bins = sdr.readFromStream()
-        data = np.add(data, dsp.doFFT(collected_bins, bins))
+        tmp_bins = sdr.readFromStream()
+        data = np.add(data, dsp.doFFT(tmp_bins, bins))
     data = np.divide(data, fft_num)
     sdr.stopStream()
+    # print(f"Execution time: {datetime.utcnow()-start}")
+
 
     # TODO
     '''
@@ -86,24 +97,16 @@ def spectralLine(config):
     if config["obj"]["LSR_correct"]:
         velocities = velocities - LSR_correction
 
-    # Crop data if DC offset is used
-    if DC_offset != 0:
-        # Bins to exclude to avoid roll-off and DC spike
-        n_bins = int(np.ceil(bins*0.1))
-        data = data[int(bins/2+n_bins):-n_bins]
-        freqs = freqs[int(bins/2+n_bins):-n_bins]
-        velocities = velocities[int(bins/2+n_bins):-n_bins]
 
     # Perform final DSP on data
-    # data = dsp.checkForZero(data)
-    # data = 10*np.log10(data)
     data = dsp.correctSlant(data)
     median = config["sdr"]["median"]
     data = dsp.applyMedian(data, int(median))
     data = dsp.shiftNoiseFloor(data)
 
     # Finally, plot the data
-    plot.plotData(data, velocities, line_name, gal_coords, eq_coords, LSR_correction, current_time)
+    plot_limits = tuple(config["data"]["plot_limits"])
+    plot.plotData(data, velocities, plot_limits, line_name, gal_coords, eq_coords, LSR_correction, current_time)
 
     # Save data in desired format
     if config["data"]["write_data"]:
@@ -153,4 +156,3 @@ if __name__ == "__main__":
 
 # TODO
 # If argparse, -noui, run with default values from config.json
-

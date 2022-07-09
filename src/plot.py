@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
 
-def plotData(data, velocities, line_name, gal_coords, eq_coords, lsr, time):
+def plotData(data, velocities, plot_limits, line_name, gal_coords, eq_coords, lsr, time):
     # Create figure and title
     fig = plt.figure(figsize=(10,7))
     fig.suptitle(f"Observation at: {time}", fontsize=16)
@@ -33,6 +33,8 @@ def plotData(data, velocities, line_name, gal_coords, eq_coords, lsr, time):
     spectrum_ax.plot(velocities, data, color = "b", linewidth = 0.75, label = "Observed data")
     spectrum_ax.set(xlim = (velocities[0], velocities[-1]))
     spectrum_ax.set(xlabel = r"Radial velocity [$\frac{km}{s}$]")
+    if plot_limits != (0,0):
+        spectrum_ax.set(ylim=plot_limits)
 
     # Plot 0 km/s reference line
     spectrum_ax.axvline(x = 0, color = colors.to_rgba('k', 0.5), linestyle = ':', linewidth = 1, label = 'Theoretical frequency')
