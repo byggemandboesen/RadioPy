@@ -80,6 +80,7 @@ The `obj` section includes information about the type of object being observed. 
 * OH_1665 - Hydroxyl, 1665MHz
 * OH_1667 - Hydroxyl, 1667MHz
 * OH_1720 - Hydroxyl, 1720MHz
+
 This list will most likely also include more spectral lines in the future. <br>
 The `sdr` section includes settings for the SDR and data collection for observing a given spectral line. The `dc_offset` offsets the center frequency by a quarter of the sample rate, so the center frequency is not disturbed by the DC spike from some devices. <br>
 The `frontend` section includes an optional downconversion frequency if you're using a local oscillator. This may be usefult for observing higher frequencies like water masers. <br>
