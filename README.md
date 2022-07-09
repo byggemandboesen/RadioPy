@@ -91,3 +91,4 @@ In the future, I hope to include a module for pulsar observation as well.
 * Pulsar module
 * Improve sampling method
 * Create UI
+* Improve README
