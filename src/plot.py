@@ -32,7 +32,7 @@ def plotData(data, velocities, plot_limits, line_name, gal_coords, eq_coords, ls
     # Plot spectrum
     spectrum_ax.plot(velocities, data, color = "b", linewidth = 0.75, label = "Observed data")
     spectrum_ax.set(xlim = (velocities[0], velocities[-1]))
-    spectrum_ax.set(xlabel = r"Radial velocity [$\frac{km}{s}$]")
+    spectrum_ax.set(xlabel = r"Radial velocity [$\frac{km}{s}$]", ylabel = r"SNR [$dB$]")
     if plot_limits != (0,0):
         spectrum_ax.set(ylim=plot_limits)
 
