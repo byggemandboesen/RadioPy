@@ -12,19 +12,19 @@
         "LSR_correct": true
     },
     "sdr": {
-        "driver": "rtlsdr",
-        "sample_rate": 2400000,
+        "driver": "airspy",
+        "sample_rate": 6000000,
         "PPM_offset": 0,
-        "bins": 4096,
+        "bins": 8192,
         "fft_num": 1000,
         "median": 10,
-        "dc_offset": true
+        "dc_offset": false
     },
     "frontend": {
         "LO": 0
     },
     "data": {
-        "plot_limits": [0,0],
+        "plot_limits": [0.0,0.0],
         "write_data": false,
         "type": "csv"
     }

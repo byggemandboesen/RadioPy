@@ -77,9 +77,18 @@ def spectralLine(config):
         tmp_bins = sdr.readFromStream()
         data = np.add(data, dsp.doFFT(tmp_bins, bins))
     data = np.divide(data, fft_num)
+
+    # Sample a blank part of the spectrum
+    sdr.setFrequency(sdr_freq+1.1*sdr.getSampleRate())
+    blank = np.zeros(bins)
+    for i in range(0,fft_num):
+        tmp_bins = sdr.readFromStream()
+        blank = np.add(blank, dsp.doFFT(tmp_bins, bins))
+    blank = np.divide(blank, fft_num)
+
     sdr.stopStream()
     # print(f"Execution time: {datetime.utcnow()-start}")
-
+    data = np.subtract(data, blank)
 
     # TODO
     '''
