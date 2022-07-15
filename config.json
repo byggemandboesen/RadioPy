@@ -12,10 +12,10 @@
         "LSR_correct": true
     },
     "sdr": {
-        "driver": "airspy",
-        "sample_rate": 6000000,
+        "driver": "rtlsdr",
+        "sample_rate": 3200000,
         "PPM_offset": 0,
-        "bins": 8192,
+        "bins": 4096,
         "fft_num": 1000,
         "median": 10,
         "dc_offset": false
