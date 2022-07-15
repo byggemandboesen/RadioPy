@@ -1,6 +1,6 @@
 import numpy as np
 from datetime import datetime
-import argparse, json, sys
+import argparse, json, sys, os
 import pandas as pd
 
 sys.path.append("src/")
@@ -29,7 +29,13 @@ def main():
     # Load data
     if args.load_data != "none":
         file_path = args.load_data
-        print("Loading from file")
+        
+        # Check if valid file
+        if not os.path.isfile(file_path) or all([file_path[-4:] != ".csv", file_path[-5:] != ".json"]):
+            print("File could not be found, or it is of invalid file extension...")
+            quit()
+
+        loadData(file_path)
         quit()
 
     # Read defults from config
@@ -79,16 +85,16 @@ def spectralLine(config):
     data = np.divide(data, fft_num)
 
     # Sample a blank part of the spectrum
-    sdr.setFrequency(sdr_freq+1.1*sdr.getSampleRate())
-    blank = np.zeros(bins)
-    for i in range(0,fft_num):
-        tmp_bins = sdr.readFromStream()
-        blank = np.add(blank, dsp.doFFT(tmp_bins, bins))
-    blank = np.divide(blank, fft_num)
+    # sdr.setFrequency(sdr_freq+1.1*sdr.getSampleRate())
+    # blank = np.zeros(bins)
+    # for i in range(0,fft_num):
+    #     tmp_bins = sdr.readFromStream()
+    #     blank = np.add(blank, dsp.doFFT(tmp_bins, bins))
+    # blank = np.divide(blank, fft_num)
+    # data = np.subtract(data, blank)
 
     sdr.stopStream()
     # print(f"Execution time: {datetime.utcnow()-start}")
-    data = np.subtract(data, blank)
 
     # TODO
     '''
@@ -115,7 +121,7 @@ def spectralLine(config):
 
     # Finally, plot the data
     plot_limits = tuple(config["data"]["plot_limits"])
-    plot.plotData(data, velocities, plot_limits, line_name, gal_coords, eq_coords, LSR_correction, current_time)
+    plot.plotData(data, velocities, line_name, gal_coords, eq_coords, LSR_correction, current_time, plot_limits)
 
     # Save data in desired format
     if config["data"]["write_data"]:
@@ -158,10 +164,49 @@ def spectralLine(config):
             print("File extension not found. Please make sure it's either \"csv\" or \"json\"!")
 
 
+def loadData(path):
+    '''
+    Load data created by this software.
+    Finally, the data is plotted.
+    '''
+    if path[-4:] == ".csv":
+        print("Loading as csv file")
+        df = pd.read_csv(path)
+        
+        data = np.array(df["Data"])
+        velocities = np.array(df["Velocities"])
+        freqs = np.array(df["Frequencies"])
+        eq_coords = np.array(df["Eq_coords"].dropna())
+        gal_coords = np.array(df["Gal_coords"].dropna())
+        line_name = df["Spectral_line"].dropna().to_string()
+        current_time = df["Observation_time"].dropna().to_string()
+        LSR_correction = float(-df["LSR_correction"].dropna())
+    
+    elif path[-5:] == ".json":
+        print("Loading as json file")
+
+        with open(path, "r") as file:
+            parsed = json.load(file)
+
+            data = np.array(parsed["Data"])
+            velocities = np.array(parsed["Velocities"])
+            freqs = np.array(parsed["Frequencies"])
+            eq_coords = parsed["Eq_coords"]
+            gal_coords = parsed["Gal_coords"]
+            line_name = parsed["Spectral_line"]
+            current_time = parsed["Observation_time"]
+            LSR_correction = -parsed["LSR_correction"]
+        file.close()
+
+    else:
+        print("Unexpected error occured...")
+
+    plot.plotData(data, velocities, line_name, gal_coords, eq_coords, LSR_correction, current_time)
+
+
 if __name__ == "__main__":
     main()
     quit()
-
 
 # TODO
 # If argparse, -noui, run with default values from config.json

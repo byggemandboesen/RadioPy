@@ -8,7 +8,7 @@ from astropy.utils.exceptions import AstropyWarning
 warnings.simplefilter('ignore', category=AstropyWarning)
 
 
-class Ephemeris():    
+class Ephemeris:    
     def __init__(self, lat, lon, elev, time):
         self.QTH = EarthLocation(lat = lat*u.degree, lon=lon*u.degree,height=elev*u.m)
         self.TIME = Time(time)

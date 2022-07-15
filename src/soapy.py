@@ -15,7 +15,7 @@ def listDrivers():
     return driver_names
 
 
-class SDR():
+class SDR:
     def __init__(self, driver: str, freq: int = 1420405752, sample_rate: int = 1e6, ppm_offset: int = 0, bins: int = 4096):
         
         # Initialize SDR
