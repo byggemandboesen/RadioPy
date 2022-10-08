@@ -31,7 +31,8 @@ The primary goal for RaioPy is to act as a simple, yet useful, tool for radioast
 * Nooelec XTR
 * Airspy mini
 * HackRF
-<br>
+
+
 This list will likely grow as users report their experience with different devices!
 
 ### Performing observation
