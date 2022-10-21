@@ -1,19 +1,27 @@
 import sys
 import dearpygui.dearpygui as dpg
 
-import src.soapy as soapy
-
 # TODO Probably make a separate UI for pulsar stuff I don't know yet
 # TODO Get screen resolution to scale UI properly
+
+import ui.modules.parameters.parameters as parameters
+
 
 # Run user interface
 def runUI():
     dpg.create_context()
-    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=650, height=500)
+    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1280, height=720)
     
-    # Show window for each parameter category
+    # Show module for each parameter category
+    with dpg.window(label = "Modules", width=400, height=500, no_close=True, pos= [10,10]):
+        parameters.parametersModule()
 
     # Get sample rates and etc. from "sdr"
+
+    # Create editing module and live plot window
+
+    # Maybe create window for pulsar stuff?
+
 
     dpg.setup_dearpygui()
     dpg.show_viewport()

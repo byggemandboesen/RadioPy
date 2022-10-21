@@ -17,7 +17,7 @@
         "PPM_offset": 0,
         "bins": 4096,
         "fft_num": 1000,
-        "median": 10,
+        "median": 0,
         "dc_offset": false
     },
     "frontend": {
