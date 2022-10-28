@@ -58,18 +58,18 @@ If you chose to edit the config file manually, here's a breif description of all
     },
     "sdr": {
         "driver": "rtlsdr",
-        "sample_rate": 2400000,
+        "sample_rate": 3200000,
         "PPM_offset": 0,
+        "dc_offset": false,
         "bins": 4096,
         "fft_num": 1000,
-        "median": 10,
-        "dc_offset": true
+        "median": 0
     },
     "frontend": {
         "LO": 0
     },
     "data": {
-        "plot_limits": [0,0],
+        "plot_limits": [0.0,0.0],
         "write_data": false,
         "type": "csv"
     }

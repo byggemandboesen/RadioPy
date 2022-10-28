@@ -15,10 +15,10 @@
         "driver": "rtlsdr",
         "sample_rate": 3200000,
         "PPM_offset": 0,
+        "dc_offset": false,
         "bins": 4096,
         "fft_num": 1000,
-        "median": 0,
-        "dc_offset": false
+        "median": 0
     },
     "frontend": {
         "LO": 0

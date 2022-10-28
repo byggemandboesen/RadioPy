@@ -5,6 +5,7 @@ import dearpygui.dearpygui as dpg
 # TODO Get screen resolution to scale UI properly
 
 import ui.modules.parameters.parameters as parameters
+import ui.modules.editor.editor as editor
 
 
 # Run user interface
@@ -15,6 +16,7 @@ def runUI():
     # Show module for each parameter category
     with dpg.window(label = "Modules", width=400, height=500, no_close=True, pos= [10,10]):
         parameters.parametersModule()
+        editor.editorModule()
 
     # Get sample rates and etc. from "sdr"
 

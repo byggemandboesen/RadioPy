@@ -1,4 +1,4 @@
-import sys, json, soapy
+import json, soapy
 import dearpygui.dearpygui as dpg
 
 # Callbaks for module
@@ -43,12 +43,11 @@ def parametersModule():
     '''
     Module containing software parameters - eg. everything in config.json
     '''
-
     with dpg.collapsing_header(label = "Parameters"):
         dpg.add_text("Modify observing parameters")
 
         # Observer node
-        with dpg.tree_node(label = "Observer"):
+        with dpg.tree_node(label = "Observer", ):
             dpg.add_text("Observer location")
             with dpg.group(horizontal=True):
                 dpg.add_input_float(label = "Lat", width = 150, tag = "lat")
@@ -59,12 +58,11 @@ def parametersModule():
                 dpg.add_input_float(label = "Az", width = 150, tag = "az")
                 dpg.add_input_float(label = "Alt", width = 150, tag = "alt")
 
-            dpg.add_input_float(label = "Elevation", tag = "elev")
+            dpg.add_input_float(label = "Elevation", tag = "elev", width = -150)
 
         # Object node #TODO - Revise this part
         with dpg.tree_node(label = "Object"):
             dpg.add_text("Object type/information")
-        
         
         # SDR node
         with dpg.tree_node(label = "SDR"):
@@ -73,9 +71,52 @@ def parametersModule():
             # Determine available soapy devices
             available_drives = soapy.listDrivers()
             dpg.add_combo(available_drives, label = "Driver", tag="driver", width = -150, callback=selectedSDR)
-            # SDR sample rates
-            dpg.add_combo([], label = "Sample rate (MHz)", tag = "sample_rate", width = -150)
+            
+            # SDR sample rates are added once device is selected
+            dpg.add_combo([], label = "Sample rate (MHz)", default_value = "none", tag = "sample_rate", width = -150, callback = updateTimeEstimate)
             dpg.add_input_int(label = "PPM offset", default_value = 0, tag = "PPM_offset", width = -150)
+            dpg.add_input_float(label = "LO frequency", default_value=0, width=-150, tag = "LO")
+            dpg.add_checkbox(label = "DC offset", default_value=False, tag = "dc_offset")
+
+            dpg.add_spacer(height=5)
+            dpg.add_text("Data/bin collection")
+            # TODO Add data collection time calculation from the values entered
+            dpg.add_input_int(label = "Bins", default_value=4096, tag = "bins", width = -150, callback = updateTimeEstimate)
+            dpg.add_input_int(label = "FFT average", default_value=1000, tag = "fft_num", width = -150, callback = updateTimeEstimate)
+            dpg.add_input_int(label = "Median", default_value=0, tag = "median", width = -150, callback = updateTimeEstimate)
+
+            dpg.add_spacer(height=5)
+            with dpg.group(horizontal=True):
+                dpg.add_text("Estimated observation time: ")
+                dpg.add_text("NaN", tag = "estimated_time")
+                dpg.add_text("seconds")
+
+        dpg.add_spacer(height=5)
+        dpg.add_button(label = "Apply default", callback=applyDefault)
+        dpg.add_spacer(height=5)
+
+
+def applyDefault():
+    '''
+    Applies default settings to all parameters
+    '''
+    # TODO Reset parameters to default
+    print("Reverting to default...")
+
+
+def updateTimeEstimate():
+    '''
+    Update estimated observation duration
+    '''
+    if dpg.get_value("sample_rate") == "none":
+        return
+    
+    sample_rate = float(dpg.get_value("sample_rate"))
+    bins = float(dpg.get_value("bins"))
+    ffts = float(dpg.get_value("fft_num"))
+
+    time_estimate = bins*ffts/sample_rate
+    dpg.set_value("estimated_time", time_estimate)
 
 
 def selectedSDR():
@@ -87,7 +128,3 @@ def selectedSDR():
     sdr = SDR(driver)
     sample_rates = sdr.getAvailableSampleRates()
     dpg.configure_item("sample_rate", items = sample_rates)
-
-
-def updateValues():
-    print("Updating fields")
