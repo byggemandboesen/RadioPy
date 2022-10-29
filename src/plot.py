@@ -42,5 +42,6 @@ def plotData(data, velocities, line_name, gal_coords, eq_coords, lsr, time, plot
     # Add legend, gridlines and padding
     spectrum_ax.legend(prop = {'size': 10}, loc = 1)
     plt.tight_layout(pad=1.5)
-    plt.savefig(f"./observations/{line_name.replace(', ', '_')}_{time}.png", dpi = 150)
+    file_path = f"./observations/{line_name.replace(', ', '_')}_{time}.png"
+    plt.savefig(file_path.replace(" ", "_"), dpi = 150)
     # plt.show()

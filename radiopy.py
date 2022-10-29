@@ -116,7 +116,7 @@ def spectralLine(config):
     # Perform final DSP on data
     data = dsp.correctSlant(data)
     median = config["sdr"]["median"]
-    data = dsp.applyMedian(data, int(median))
+    data = dsp.applyMedian(data, int(median)) if median > 0 else data
     data = dsp.shiftNoiseFloor(data)
 
     # Finally, plot the data
@@ -126,7 +126,7 @@ def spectralLine(config):
     # Save data in desired format
     if config["data"]["write_data"]:
         extension = config["data"]["type"].lower()
-        file_name = f"observations/{line.upper()}_{current_time}"
+        file_name = f"observations/{line.upper()}_{current_time}".replace(" ", "_")
         
         if extension == "json":
             formatted = {

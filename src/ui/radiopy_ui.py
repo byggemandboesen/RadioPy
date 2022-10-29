@@ -14,13 +14,9 @@ def runUI():
     dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1280, height=720)
     
     # Show module for each parameter category
-    with dpg.window(label = "Modules", width=400, height=500, no_close=True, pos= [10,10]):
+    with dpg.window(label = "Modules", width=800, height=500, no_close=True, pos= [10,10]):
         parameters.parametersModule()
         editor.editorModule()
-
-    # Get sample rates and etc. from "sdr"
-
-    # Create editing module and live plot window
 
     # Maybe create window for pulsar stuff?
 
