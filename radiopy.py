@@ -4,6 +4,7 @@ import argparse, json, sys, os
 import pandas as pd
 
 sys.path.append("src/")
+sys.dont_write_bytecode = True
 import dsp, soapy, plot
 from soapy import SDR
 import ui.radiopy_ui as ui
@@ -12,31 +13,36 @@ from ephemeris import Ephemeris
 
 def main():
     parser = argparse.ArgumentParser(prog="radiopy.py", description="The python solution for radio astronomy with an SDR")
-    parser.add_argument("-ui", help="Run program with UI", action="store_true", dest="show_ui")
-    parser.add_argument("-d", help="List available drivers", action="store_true", dest="list_drivers")
-    parser.add_argument("-l", help="Load, and plot, data from a given file path (csv or json)", default="none", type=str, dest="load_data")
+    parser.add_argument("-s", help="Quick run spectral line observation", action="store_true", dest="run_line")
+    parser.add_argument("-p", help="Quick run pulsar observation", action="store_true", dest="run_pulsar")
+    # parser.add_argument("-d", help="List available drivers", action="store_true", dest="list_drivers")
+    # parser.add_argument("-l", help="Load, and plot, data from a given file path (csv or json)", default="none", type=str, dest="load_data")
     # parser.add_argument("-p", help="Run in pulsar mode at given frequency (in Hz)", default=0, type=int, dest="pulsar")
     args = parser.parse_args()
 
-    if args.show_ui:
+    if args.run_line:
+        print("Running spectral line observation from config settings...")
+    elif args.run_pulsar:
+        print("Running pulsar observation")
+    else:
         ui.runUI()
         quit()
 
-    if args.list_drivers:
-        print(f"Available drivers:\n{soapy.listDrivers()}")
-        quit()
+    # if args.list_drivers:
+    #     print(f"Available drivers:\n{soapy.listDrivers()}")
+    #     quit()
 
     # Load data
-    if args.load_data != "none":
-        file_path = args.load_data
+    # if args.load_data != "none":
+    #     file_path = args.load_data
         
-        # Check if valid file
-        if not os.path.isfile(file_path) or all([file_path[-4:] != ".csv", file_path[-5:] != ".json"]):
-            print("File could not be found, or it is of invalid file extension...")
-            quit()
+    #     # Check if valid file
+    #     if not os.path.isfile(file_path) or file_path[-4:] != ".csv":
+    #         print("File could not be found, or it is of invalid file extension...")
+    #         quit()
 
-        loadData(file_path)
-        quit()
+    #     loadData(file_path)
+    #     quit()
 
     # Read defults from config
     with open("config.json") as config:
@@ -50,6 +56,9 @@ def main():
     else:
         spectralLine(parsed_config)
 
+# TODO Redo this function
+# Should make pulsar function easier to implement from SDR-, GroundStation class and corresponding params
+# def spetralLine(sdr: SDR, gs: GroundStation, bins: int = 4096, fft_num: int = 1000, median: int = 0)
 
 def spectralLine(config):
     # Create observer from config data
@@ -125,51 +134,33 @@ def spectralLine(config):
 
     # Save data in desired format
     if config["data"]["write_data"]:
-        extension = config["data"]["type"].lower()
         file_name = f"observations/{line.upper()}_{current_time}".replace(" ", "_")
-        
-        if extension == "json":
-            formatted = {
-                "Eq_coords": eq_coords,
-                "Gal_coords": gal_coords,
-                "Spectral_line": line_name,
-                "Observation_time": str(current_time),
-                "LSR_correction": -LSR_correction,
-                "Data": data.tolist(),
-                "Velocities": velocities.tolist(),
-                "Frequencies": freqs.tolist(),
-            }
-            with open(f"{file_name}.json", "w") as obs_file:
-                json.dump(formatted, obs_file, indent=4)
-            
-        elif extension == "csv":
-            # Thanks to this fix
-            # https://python.plainenglish.io/a-quick-trick-to-make-dataframes-with-uneven-array-lengths-32bf80d8a61d
 
-            df_data = {
-                "Data": data,
-                "Velocities": velocities,
-                "Frequencies": freqs,
-                "Eq_coords": eq_coords,
-                "Gal_coords": gal_coords,
-                "Spectral_line": line_name,
-                "Observation_time": current_time,
-                "LSR_correction": -LSR_correction
-            }
-            df_data = dict([(k,pd.Series(v)) for k, v in df_data.items()])
-            df = pd.DataFrame(df_data)
-            df.to_csv(f"{file_name}.csv", index = False)
+        # Thanks to this fix
+        # https://python.plainenglish.io/a-quick-trick-to-make-dataframes-with-uneven-array-lengths-32bf80d8a61d
 
-        else:
-            print("File extension not found. Please make sure it's either \"csv\" or \"json\"!")
+        df_data = {
+            "Data": data,
+            "Velocities": velocities,
+            "Frequencies": freqs,
+            "Eq_coords": eq_coords,
+            "Gal_coords": gal_coords,
+            "Spectral_line": line_name,
+            "Observation_time": current_time,
+            "LSR_correction": -LSR_correction
+        }
+        df_data = dict([(k,pd.Series(v)) for k, v in df_data.items()])
+        df = pd.DataFrame(df_data)
+        df.to_csv(f"{file_name}.csv", index = False)
 
 
+# TODO - This shall be done in UI
 def loadData(path):
     '''
     Load data created by this software.
     Finally, the data is plotted.
     '''
-    if path[-4:] == ".csv":
+    try:
         print("Loading as csv file")
         df = pd.read_csv(path)
         
@@ -181,25 +172,8 @@ def loadData(path):
         line_name = df["Spectral_line"].dropna().to_string()
         current_time = df["Observation_time"].dropna().to_string()
         LSR_correction = float(-df["LSR_correction"].dropna())
-    
-    elif path[-5:] == ".json":
-        print("Loading as json file")
-
-        with open(path, "r") as file:
-            parsed = json.load(file)
-
-            data = np.array(parsed["Data"])
-            velocities = np.array(parsed["Velocities"])
-            freqs = np.array(parsed["Frequencies"])
-            eq_coords = parsed["Eq_coords"]
-            gal_coords = parsed["Gal_coords"]
-            line_name = parsed["Spectral_line"]
-            current_time = parsed["Observation_time"]
-            LSR_correction = -parsed["LSR_correction"]
-        file.close()
-
-    else:
-        print("Unexpected error occured...")
+    except:
+        print("Error occured... Please check your file path")
 
     plot.plotData(data, velocities, line_name, gal_coords, eq_coords, LSR_correction, current_time)
 

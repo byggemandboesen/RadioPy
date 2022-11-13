@@ -18,7 +18,6 @@ def editorModule():
             # File dialog
             with dpg.file_dialog(label = "Browse", directory_selector= False, show = False, tag = "main_dialog", callback=fileDialogCallback):
                 dpg.add_file_extension(".csv")
-                dpg.add_file_extension(".json")
             
         dpg.add_text("Load secondary file")
         with dpg.group(horizontal=True):
@@ -28,7 +27,6 @@ def editorModule():
             # File dialog
             with dpg.file_dialog(label = "Browse", directory_selector= False, show = False, tag = "secondary_dialog", callback=fileDialogCallback):
                 dpg.add_file_extension(".csv")
-                dpg.add_file_extension(".json")
         
 
         dpg.add_spacer(height=5)
@@ -62,24 +60,13 @@ def updateObservationInfo():
     Update table with info from loaded observation
     '''
     path = dpg.get_value("main_path")
-    if path[-4:] == ".csv":
-        data = pd.read_csv(path)
+    data = pd.read_csv(path)
 
-        Eq_coords = [data["Eq_coords"][0], data["Eq_coords"][1]]
-        Gal_coords = [data["Gal_coords"][0], data["Gal_coords"][1]]
-        Spectral_line = data["Spectral_line"][0]
-        Observation_time = data["Observation_time"][0]
-        LSR_correction = data["LSR_correction"][0]
-    elif path[-5:] == ".json":
-        with open(path, "r") as file:
-            data = json.load(file)
-            file.close()
-        
-        Eq_coords = data["Eq_coords"]
-        Gal_coords = data["Gal_coords"]
-        Spectral_line = data["Spectral_line"]
-        Observation_time = data["Observation_time"]
-        LSR_correction = data["LSR_correction"]
+    Eq_coords = [data["Eq_coords"][0], data["Eq_coords"][1]]
+    Gal_coords = [data["Gal_coords"][0], data["Gal_coords"][1]]
+    Spectral_line = data["Spectral_line"][0]
+    Observation_time = data["Observation_time"][0]
+    LSR_correction = data["LSR_correction"][0]
 
     # Finally, update values in table
     dpg.set_value("Eq_coords", Eq_coords)

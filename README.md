@@ -70,8 +70,7 @@ If you chose to edit the config file manually, here's a breif description of all
     },
     "data": {
         "plot_limits": [0.0,0.0],
-        "write_data": false,
-        "type": "csv"
+        "write_data": false
     }
 }
 ```
@@ -86,12 +85,15 @@ The `obj` section includes information about the type of object being observed. 
 This list will most likely also include more spectral lines in the future. <br>
 The `sdr` section includes settings for the SDR and data collection for observing a given spectral line. The `dc_offset` offsets the center frequency by a quarter of the sample rate, so the center frequency is not disturbed by the DC spike from some devices. <br>
 The `frontend` section includes an optional downconversion frequency if you're using a local oscillator. This may be usefult for observing higher frequencies like water masers. <br>
-Finally, the `data` section allows the user to define the visible y-axis range for the observation plot and to save the data from the observation in either a `json` or `csv` file. <br>
+Finally, the `data` section allows the user to define the visible y-axis range for the observation plot and to save the data from the observation in a `csv` file. <br>
 
 In the future, I hope to include a module for pulsar observation as well.
 
 # TODO
 * Pulsar module
-* Improve sampling method
 * Create UI
 * Improve README
+* Add FITS support
+* Make UI main way of use
+* Change config to .config
+* Make separate processing parameters for pulsar/spetral line

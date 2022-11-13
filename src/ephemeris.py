@@ -7,6 +7,10 @@ import warnings
 from astropy.utils.exceptions import AstropyWarning
 warnings.simplefilter('ignore', category=AstropyWarning)
 
+# class GroundStation
+'''
+Class should hold properties like the earth location, sky coordinates and etc
+'''
 
 class Ephemeris:    
     def __init__(self, lat, lon, elev, time):

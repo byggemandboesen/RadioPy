@@ -1,8 +1,6 @@
 import json, soapy
 import dearpygui.dearpygui as dpg
 
-# Callbaks for module
-import ui.modules.parameters.callbacks as callbacks
 # Soapy device for drivers, sample rates and etc
 from soapy import SDR
 
@@ -39,6 +37,7 @@ DEFAULT_CONFIG = {
 }
 
 
+
 def parametersModule():
     '''
     Module containing software parameters - eg. everything in config.json
@@ -47,7 +46,7 @@ def parametersModule():
         dpg.add_text("Modify observing parameters")
 
         # Observer node
-        with dpg.tree_node(label = "Observer", ):
+        with dpg.tree_node(label = "Observer"):
             dpg.add_text("Observer location")
             with dpg.group(horizontal=True):
                 dpg.add_input_float(label = "Lat", width = 150, tag = "lat")
