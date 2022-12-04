@@ -6,15 +6,16 @@ from soapy import SDR
 
 # Update spectral line observation time estimate
 from ui.spectral_line.spectral_line_ui import updateTimeEstimate
+import ui.callbacks as cb
 
 
-def parametersWindow(pos: list = [10, 20], w: int = 400, h: int = 500):
+def parametersWindow(pos: list = [10, 10], w: int = 400, h: int = 500):
     with dpg.window(label= "General parameters", width=w, height=h, no_close=True, pos = pos):
         
         # Ground station
         with dpg.collapsing_header(label = "Ground station"):
             
-            dpg.add_text("Observer location")
+            dpg.add_text("Geographic location")
             with dpg.group(horizontal=True):
                 dpg.add_input_float(label = "Lat", width = 150, tag = "lat", min_value=-90, max_value=90)
                 dpg.add_input_float(label = "Lon", width = 150, tag = "lon", max_value=-180, min_value=180)
@@ -48,13 +49,10 @@ def parametersWindow(pos: list = [10, 20], w: int = 400, h: int = 500):
             dpg.add_text("Downconverter")
             dpg.add_input_float(label = "LO frequency", default_value=0, width=-150, tag = "LO_freq")
         
-
-def applyDefault():
-    '''
-    Applies default settings to all parameters
-    '''
-    # TODO Reset parameters to default
-    print("Reverting to default...")
+        dpg.add_spacer(height=5)
+        dpg.add_button(label = "Load config parameters", callback=cb.updateParameters)
+        dpg.add_button(label = "Apply defult parameters", callback=cb.applyDefaultParameters)
+        dpg.add_button(label = "Apply parameters to config", callback=cb.applyParameters)
 
 
 def selectedSDR():
