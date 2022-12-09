@@ -41,7 +41,7 @@ The software is mainly designed to be used through the UI, but can also be run t
 python3 radiopy.py -s
 ```
 
-Below, a breif description of all the parameters in the `config.ini`file can be found.
+Below, a breif description of all the parameters in the `config.ini` file can be found.
 ```ini
 [Ground station]
 lat = 0                     # [float] Latitude of ground station
