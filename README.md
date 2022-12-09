@@ -36,57 +36,49 @@ The primary goal for RaioPy is to act as a simple, yet useful, tool for radioast
 This list will likely grow as users report their experience with different devices!
 
 ### Performing observation
-The software can be used headless through terminal with the help of the configuration file, `config.json`, or with the optional UI which can be accessed with the `-ui` command line argument.
+The software is mainly designed to be used through the UI, but can also be run through terminal with the help of the configuration file, `config.ini`. To run a quick spectral line observation through the terminal, run:
 ```bash
-python3 radiopy.py -ui
+python3 radiopy.py -s
 ```
 
-If you chose to edit the config file manually, here's a breif description of all the features/settings.
-```json
-{
-    "observer": {
-        "lat": 0.0,
-        "lon": 0.0,
-        "elev": 20,
-        "az": 0.0,
-        "alt": 0.0
-    },
-    "obj": {
-        "pulsar": false,
-        "spectral_line": "H1",
-        "LSR_correct": true
-    },
-    "sdr": {
-        "driver": "rtlsdr",
-        "sample_rate": 3200000,
-        "PPM_offset": 0,
-        "dc_offset": false,
-        "bins": 4096,
-        "fft_num": 1000,
-        "median": 0
-    },
-    "frontend": {
-        "LO": 0
-    },
-    "data": {
-        "plot_limits": [0.0,0.0],
-        "write_data": false
-    }
-}
+Below, a breif description of all the parameters in the `config.ini`file can be found.
+```ini
+[Ground station]
+lat = 0                     # [float] Latitude of ground station
+lon = 0                     # [float] Lonitude of ground station
+elev = 20                   # [float] Elevation ASL for ground station in meters
+lsr_correct = True          # [bool]  Correct for LSR (Local Standard of Rest)
+az = 0                      # [float] Azimuth of antenna
+alt = 0                     # [float] Altitude of antenna
+ra = 0                      # [float] Right ascension of antenna
+dec = 0                     # [float] Declination of antenna
+use_eq_coords = False       # [bool]  Use equatorial coordinates for antenna
+lo_freq = 0                 # [float] Optional LO frequency for downconverters
+
+[SDR]   
+driver = none               # [str]   SDR driver to use
+sample_rate = 0             # [float] Sample rate of SDR
+ppm_offset = 0              # [float] PPM offset of SDR
+bins = 4096                 # [float] Bins per FFT
+
+[Spectral line] 
+fft_num = 1000              # [float] Number of FFTs to average
+median = 0                  # [float] Bins to include in median smoothing
+dc_offset = False           # [bool]  Offset center frequency to avoid DC spike overlap
+spectral_line = H1_1420     # [str]   Spectral line to observe
+y_min = 0.0                 # [float] y-axis minimum
+y_max = 0.0                 # [float] y-axis maximum
+save_data = False           # [bool] Export observation data as csv file
 ```
-The `observer` section includes information about the geographic location of the antenna/receiver together with the horizontal coordinates of the antenna.<br>
-The `obj` section includes information about the type of object being observed. Please note, the pulsar feature is not implementet yet! A list of spectral lines can be found here:
-* H1 - Hydrogen, 1420MHz
+**Thorough description of config parameters coming soon**
+A list of spectral lines can be found here:
+* H1_1420 - Neutral hydrogen, 1420MHz
 * OH_1612 - Hydroxyl, 1612MHz
 * OH_1665 - Hydroxyl, 1665MHz
 * OH_1667 - Hydroxyl, 1667MHz
 * OH_1720 - Hydroxyl, 1720MHz
 
 This list will most likely also include more spectral lines in the future. <br>
-The `sdr` section includes settings for the SDR and data collection for observing a given spectral line. The `dc_offset` offsets the center frequency by a quarter of the sample rate, so the center frequency is not disturbed by the DC spike from some devices. <br>
-The `frontend` section includes an optional downconversion frequency if you're using a local oscillator. This may be usefult for observing higher frequencies like water masers. <br>
-Finally, the `data` section allows the user to define the visible y-axis range for the observation plot and to save the data from the observation in a `csv` file. <br>
-
 In the future, I hope to include a module for pulsar observation as well.
 
 # TODO
@@ -95,5 +87,4 @@ In the future, I hope to include a module for pulsar observation as well.
 * Improve README
 * Add FITS support
 * Make UI main way of use
-* Change config to .config
 * Make separate processing parameters for pulsar/spetral line

@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from astropy import units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord, LSRK, EarthLocation, AltAz, ICRS, Galactic
@@ -7,23 +8,43 @@ import warnings
 from astropy.utils.exceptions import AstropyWarning
 warnings.simplefilter('ignore', category=AstropyWarning)
 
-# class GroundStation
-'''
-Class should hold properties like the earth location, sky coordinates and etc
-'''
+@dataclass
+class Antenna:
+    '''
+    Antenna object containing the following parameters
+    Antenna direction in the sky
+     - az
+     - alt
+     - ra
+     - dec
+    use_eq_coords       Use equatorial coordinates of antenna position (ra, dec)
+    LO_freq             Frequency of local oscillator in Hz
+    '''
+    az: float
+    alt: float
+    ra: float
+    dec: float
+    use_eq_coords: bool
 
-class Ephemeris:    
-    def __init__(self, lat, lon, elev, time):
+    LO_freq: float
+
+# Consider having antenna galactic and equatorial coordinates as property?
+# Maybe inherit some stuff from each class?
+
+class GroundStation:
+    # TODO - Work on this
+    def __init__(self, lat: float, lon: float, elev: float, time, lsr_correct: bool, antenna: Antenna):
         self.QTH = EarthLocation(lat = lat*u.degree, lon=lon*u.degree,height=elev*u.m)
         self.TIME = Time(time)
+        self.lsr_correct = lsr_correct
 
     def parseSpectralLine(self, line):
         '''
         Get the frequency and name of a given spectral line
-        Returns the frequency and name as a touple
+        Returns the frequency and name as a tuple (int: freq, str: name)
         '''
         spectral_lines = {
-            "H1": (1420405752, "Hydrogen, 1420MHz"),
+            "H1_1420": (1420405752, "Hydrogen, 1420MHz"),
             "OH_1612": (1612231000, "Hydroxyl, 1612MHz"),
             "OH_1665": (1665402000, "Hydroxyl, 1665MHz"),
             "OH_1667": (1667359000, "Hydroxyl, 1667MHz"),
@@ -39,7 +60,7 @@ class Ephemeris:
     def galactic(self, alt, az):
         '''
         Compute galactic coordinates from azimuth and altitude
-        Returns the coordinates as a list [lon,lat]
+        Returns the coordinates as a list [float: lon, float: lat]
         '''
         horizontal_coord = AltAz(alt = alt*u.degree, az = az*u.degree, pressure = 0*u.bar, obstime = self.TIME,location=self.QTH)
         gal_coord = horizontal_coord.transform_to(Galactic())
@@ -50,7 +71,7 @@ class Ephemeris:
     def equatorial(self, alt, az):
         '''
         Compute equatorial coordinates from azimuth and altitude
-        Returns the coordinates as a list [ra, dec]
+        Returns the coordinates as a list [float: ra, float: dec]
         '''
         horizontal_coord = AltAz(alt = alt*u.degree, az = az*u.degree, pressure = 0*u.bar, obstime = self.TIME,location=self.QTH)
         eq_coord = SkyCoord(horizontal_coord.transform_to(ICRS()))
@@ -81,6 +102,9 @@ class Ephemeris:
         '''
         Compute the necessary velocity correction for LSR reference frame
         '''
+        if not self.lsr_correct:
+            return 0
+        
         sky_coord = SkyCoord(ra=ra*u.degree, dec=dec*u.degree, frame="icrs")
         # Correction wrt. barycenter
         bary_corr = sky_coord.radial_velocity_correction(obstime = self.TIME, location = self.QTH)

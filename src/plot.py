@@ -3,6 +3,25 @@ from matplotlib import colors
 import numpy as np
 
 def plotData(data, velocities, line_name, gal_coords, eq_coords, lsr, time, plot_limits = (0,0)):
+    '''
+    Plot the data from an observation
+
+    data        - ndarray of observation data
+
+    velocities  - ndarray of radial velocity
+
+    line_name   - String of line name
+
+    gal_coords  - ndarray with [lon, lat]
+
+    eq_coords   - ndarray with [ra, dec]
+
+    lsr         - float LSR correction in km/s
+
+    time        - datetime of time of observation
+
+    plot_limits - tuple of y-axis limits (max,min)
+    '''
     # Create figure and title
     fig = plt.figure(figsize=(10,7))
     fig.suptitle(f"Observation at: {time}", fontsize=16)

@@ -40,6 +40,7 @@ class SDR:
     def getAvailableFreqencyRange(self):
         '''
         Get the tunable frequency range for the current SDR
+
         Returns a list of lowest and highest tunable frequency
         '''
         range = self.sdr.getFrequencyRange(SOAPY_SDR_RX, 0)[0]
@@ -48,14 +49,16 @@ class SDR:
     def getAvailableSampleRates(self):
         '''
         Get the tunable sample rates for the current SDR
+
         Returns a list of tunable sample rates
         '''
         range = self.sdr.listSampleRates(SOAPY_SDR_RX, 0)
-        return list(range)
+        return list(int(sample_rate) for sample_rate in range)
     
     def getTunableElements(self):
         '''
         Get the tunable elements (RF and sometimes PPM correction)
+        
         Returns a list of tunable elements
         '''
         elem = self.sdr.listFrequencies(SOAPY_SDR_RX, 0)

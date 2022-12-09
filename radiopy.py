@@ -8,7 +8,7 @@ sys.dont_write_bytecode = True
 import dsp, soapy, plot
 from soapy import SDR
 import ui.radiopy_ui as ui
-from ephemeris import Ephemeris
+from ground_station import GroundStation
 
 
 def main():
@@ -65,10 +65,9 @@ def spectralLine(config):
     lat, lon, elev = config["observer"]["lat"], config["observer"]["lon"], config["observer"]["elev"]
     az, alt = config["observer"]["az"], config["observer"]["alt"]
     current_time = datetime.utcnow()
-    ephem = Ephemeris(lat, lon, elev, current_time)
+    GS = GroundStation(lat, lon, elev, current_time)
 
     # Get frequency and initialize SDR
-    # TODO Implement DC offset!!
     sdr_driver = config["sdr"]["driver"]
     sample_rate, ppm, bins = config["sdr"]["sample_rate"], config["sdr"]["PPM_offset"], config["sdr"]["bins"]
     line = config["obj"]["spectral_line"]
@@ -76,7 +75,7 @@ def spectralLine(config):
     # Set up DC offset/LO offset if necessary
     LO_freq = config["frontend"]["LO"]
     DC_offset = sample_rate/4 if config["sdr"]["dc_offset"] and sample_rate >= 32e5 else 0
-    rest_freq, line_name = ephem.parseSpectralLine(line)
+    rest_freq, line_name = GS.parseSpectralLine(line)
     sdr_freq = rest_freq - LO_freq - DC_offset
     
     sdr = SDR(driver = sdr_driver, freq = sdr_freq, sample_rate = sample_rate, ppm_offset = ppm, bins = bins)
@@ -113,11 +112,11 @@ def spectralLine(config):
     '''
 
     # Gather observation coordinates and LSR correction
-    eq_coords = ephem.equatorial(alt, az)
-    gal_coords = ephem.galactic(alt, az)
+    eq_coords = GS.equatorial(alt, az)
+    gal_coords = GS.galactic(alt, az)
 
-    velocities = [ephem.freqToVel(rest_freq, freq) for freq in freqs]
-    LSR_correction = ephem.getLSRCorrection(eq_coords[0], eq_coords[1]) if config["obj"]["LSR_correct"] else 0
+    velocities = [GS.freqToVel(rest_freq, freq) for freq in freqs]
+    LSR_correction = GS.getLSRCorrection(eq_coords[0], eq_coords[1]) if config["obj"]["LSR_correct"] else 0
     if config["obj"]["LSR_correct"]:
         velocities = velocities - LSR_correction
 

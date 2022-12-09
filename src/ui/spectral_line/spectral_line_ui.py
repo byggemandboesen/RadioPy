@@ -1,13 +1,8 @@
 import dearpygui.dearpygui as dpg
 
-# Available spectral lines
-SPECTRAL_LINES = {
-    "H1, 1420MHz": "H1",
-    "OH, 1612MHz": "OH_1612",
-    "OH, 1665MHz": "OH_1665",
-    "OH, 1667MHz": "OH_1667",
-    "OH, 1720MHz": "OH_1720"
-}
+import ui.callbacks as CB
+import spectral_line as SpectralLine
+
 
 def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
     with dpg.window(label= "Spectral line", width=w, height=h, no_close=True, pos=pos):
@@ -26,7 +21,7 @@ def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
 
         with dpg.collapsing_header(label = "Object"):
             dpg.add_text("Select spectral line")
-            dpg.add_combo(list(SPECTRAL_LINES.keys()), default_value=list(SPECTRAL_LINES.keys())[0], tag = "spectral_line")
+            dpg.add_combo(list(CB.SPECTRAL_LINES.keys()), default_value=list(CB.SPECTRAL_LINES.keys())[0], tag = "spectral_line")
             
             with dpg.group(horizontal=True):
                 dpg.add_checkbox(label = "Correct for LSR", tag="lsr_correct", default_value=True)
@@ -35,10 +30,29 @@ def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
             with dpg.tooltip("lsr_tooltip"):
                 dpg.add_text("Correct radial velocity to the local standard of rest")
         
+        with dpg.collapsing_header(label = "Data visualization/saving"):
+            with dpg.group(horizontal=True):
+                dpg.add_text("Plot limits")
+                dpg.add_text("(?)", color=(0,0,255,255), tag = "plot_limits_tooltip")
+
+            with dpg.group(horizontal=True):
+                dpg.add_input_float(label="Y min", width = 150, default_value=0, tag="y_min")
+                dpg.add_input_float(label="Y max", width = 150, default_value=0, tag="y_max")
+            
+            with dpg.tooltip("plot_limits_tooltip"):
+                dpg.add_text("Y-axis plot limits. If left to 0,0 axis will be autoscaled")
+            
+
+            dpg.add_checkbox(label = "Save data", default_value=False, tag="save_data")
+
 
         # Run observation section
-        dpg.add_spacer(height=5)
-        dpg.add_button(label = "Run observation", callback=runObservation)
+        dpg.add_spacer(height=10)
+        with dpg.theme(tag = "run_spectral_button_theme"):
+            with dpg.theme_component(dpg.mvButton):
+                dpg.add_theme_color(dpg.mvThemeCol_Button, (15, 86, 136,255))
+        dpg.add_button(label = "Run observation", callback=SpectralLine.runObservation)
+        dpg.bind_item_theme(dpg.last_item(), "run_spectral_button_theme")
         with dpg.group(horizontal=True):
             dpg.add_text("Estimated observation time: ")
             dpg.add_text("NaN", tag = "estimated_time")
@@ -60,6 +74,3 @@ def updateTimeEstimate():
     dpg.set_value("estimated_time", time_estimate)
 
 
-def runObservation():
-    line = SPECTRAL_LINES[dpg.get_value("spectral_line")]
-    print("Running observation...")

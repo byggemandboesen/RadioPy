@@ -39,20 +39,20 @@ def parametersWindow(pos: list = [10, 10], w: int = 400, h: int = 500):
             dpg.add_text("SDR")
             # Determine available soapy devices
             available_drives = soapy.listDrivers()
-            dpg.add_combo(available_drives, label = "Driver", tag="driver", width = -150, callback=selectedSDR)
+            dpg.add_combo(available_drives, default_value="none" , label = "Driver", tag="driver", width = -150, callback=selectedSDR)
             
             # SDR sample rates are added once device is selected
-            dpg.add_combo([], label = "Sample rate (MHz)", default_value = "none", tag = "sample_rate", width = -150, callback=updateTimeEstimate)
-            dpg.add_input_int(label = "PPM offset", default_value = 0, tag = "PPM_offset", width = -150)
+            dpg.add_combo([], label = "Sample rate (MHz)", tag = "sample_rate", width = -150 , callback=updateTimeEstimate)
+            dpg.add_input_int(label = "PPM offset", default_value = 0, tag = "ppm_offset", width = -150)
 
             dpg.add_spacer(height=5)
             dpg.add_text("Downconverter")
-            dpg.add_input_float(label = "LO frequency", default_value=0, width=-150, tag = "LO_freq")
+            dpg.add_input_int(label = "LO frequency", default_value=0, width=-150, tag = "lo_freq")
         
         dpg.add_spacer(height=5)
         dpg.add_button(label = "Load config parameters", callback=cb.updateParameters)
         dpg.add_button(label = "Apply defult parameters", callback=cb.applyDefaultParameters)
-        dpg.add_button(label = "Apply parameters to config", callback=cb.applyParameters)
+        # dpg.add_button(label = "Apply parameters to config", callback=cb.applyParameters)
 
 
 def selectedSDR():
