@@ -1,4 +1,5 @@
 from datetime import datetime
+import pandas as pd
 import numpy as np
 
 import ui.callbacks as CB
@@ -7,12 +8,14 @@ from soapy import SDR
 import dsp as DSP
 from plot import plotData
 
+
 def runObservation():
     # Apply current parameters to config
     CB.applyParameters()
     # Load config
     config = CB.loadConfig()
     print("Running observation...")
+
 
     # Configure Antenna/ground station
     lat = config.getfloat("Ground station", "lat")
@@ -46,14 +49,70 @@ def runObservation():
     dc_offset = sample_rate/4 if config.getboolean("Spectral line", "dc_offset") and sample_rate >= 32e5 else 0
     spectral_line = config.get("Spectral line", "spectral_line")
 
-    rest_freq, line_name = GS.parseSpectralLine(spectral_line)
+    # Determine tuning frequency
+    rest_freq, line_name = parseSpectralLine(spectral_line)
     sdr_freq = rest_freq - LO_freq - dc_offset
     sdr = SDR(driver, sdr_freq, sample_rate, PPM_offset, bins)
-
+    # Collect data
     freqs, data = collectData(sdr, fft_num, bins, rest_freq, dc_offset)
+    if median > 0:
+        data = DSP.applyMedian(bins = data, num = median)
     
-    # Calculate LSR, sky coordinates and etc
-    eq_coords = []
+
+    # Get antenna sky coordinates
+    eq_coords = ANTENNA.getEquatorialCoordinates(GS)
+    gal_coords = ANTENNA.getGalacticCoordinates(GS)
+
+    # Calculate radial velocities and correct for LSR if desired
+    lsr_correction = GS.getLSRCorrection(ra = eq_coords[0], dec = eq_coords[1]) if lsr_correct else 0
+    radial_velocities = np.subtract([GS.freqToVel(rest_freq = rest_freq, freq = freq) for freq in freqs], lsr_correction)
+
+    # Finally, plot the data
+    y_limits = (config.getfloat("Spectral line", "y_min"), config.getfloat("Spectral line", "y_max"))
+    plotData(data, radial_velocities, line_name, gal_coords, eq_coords, lsr_correction, current_time, y_limits)
+
+    
+    # Save data if wanted
+    if config.getboolean("Spectral line", "save_data"):
+        file_name = f"observations/{spectral_line.upper()}_{current_time}".replace(" ", "_")
+
+        # Thanks to this fix
+        # https://python.plainenglish.io/a-quick-trick-to-make-dataframes-with-uneven-array-lengths-32bf80d8a61d
+
+        df_data = {
+            "Data": data,
+            "Velocities": radial_velocities,
+            "Frequencies": freqs,
+            "Eq_coords": eq_coords,
+            "Gal_coords": gal_coords,
+            "Spectral_line": line_name,
+            "Observation_time": current_time,
+            "LSR_correction": -lsr_correction
+        }
+        df_data = dict([(k,pd.Series(v)) for k, v in df_data.items()])
+        df = pd.DataFrame(df_data)
+        df.to_csv(f"{file_name}.csv", index = False)
+
+
+def parseSpectralLine(line: str):
+    '''
+    Get the frequency and name of a given spectral line.
+
+    Returns the frequency and name as a tuple (int: freq, str: name)
+    '''
+    spectral_lines = {
+        "H1_1420": (1420405752, "Hydrogen, 1420MHz"),
+        "OH_1612": (1612231000, "Hydroxyl, 1612MHz"),
+        "OH_1665": (1665402000, "Hydroxyl, 1665MHz"),
+        "OH_1667": (1667359000, "Hydroxyl, 1667MHz"),
+        "OH_1720": (1720530000, "Hydroxyl, 1720MHz"),
+    }
+
+    if line.upper() not in spectral_lines.keys():
+        print("Invalid line name. Please check the README for all spectral line names")
+        quit()
+    else:
+        return spectral_lines[line.upper()]
 
 
 def collectData(sdr: SDR, fft_num: int, n_bins: int, rest_freq: int, dc_offset: int):
@@ -70,18 +129,23 @@ def collectData(sdr: SDR, fft_num: int, n_bins: int, rest_freq: int, dc_offset: 
 
     sdr.startStream()
     data = np.zeros(n_bins)
-    for i in range(0,fft_num):
-        tmp_bins = sdr.readFromStream()
-        data = np.add(data, DSP.doFFT(tmp_bins, n_bins))
-    data = np.divide(data, fft_num)
-    # Sample a blank part of the spectrum
-    # sdr.setFrequency(sdr_freq+1.1*sdr.getSampleRate())
-    # blank = np.zeros(bins)
-    # for i in range(0,fft_num):
-    #     tmp_bins = sdr.readFromStream()
-    #     blank = np.add(blank, dsp.doFFT(tmp_bins, bins))
-    # blank = np.divide(blank, fft_num)
-    # data = np.subtract(data, blank)
-    sdr.stopStream()
+
+    try:
+        for i in range(0,fft_num):
+            tmp_bins = sdr.readFromStream()
+            data = np.add(data, DSP.doFFT(tmp_bins, n_bins))
+        data = np.divide(data, fft_num)
+        # Sample a blank part of the spectrum
+        # sdr.setFrequency(sdr_freq+1.1*sdr.getSampleRate())
+        # blank = np.zeros(bins)
+        # for i in range(0,fft_num):
+        #     tmp_bins = sdr.readFromStream()
+        #     blank = np.add(blank, dsp.doFFT(tmp_bins, bins))
+        # blank = np.divide(blank, fft_num)
+        # data = np.subtract(data, blank)
+        sdr.stopStream()
+    except:
+        print("Issue when reading bins... Please try again")
+        sdr.stopStream()
 
     return freqs, data

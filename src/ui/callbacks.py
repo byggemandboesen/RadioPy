@@ -21,7 +21,7 @@ DEFAULT_PARAM = {
     "fft_num": 1000,
     "median": 0,
     "dc_offset": False,
-    "spectral_line": "Neutral hydrogen, 1420MHz",
+    "spectral_line": "Hydrogen, 1420MHz",
     "y_min": 0.0,
     "y_max": 0.0,
     "save_data": False
@@ -29,7 +29,7 @@ DEFAULT_PARAM = {
 
 # Available spectral lines
 SPECTRAL_LINES = {
-    "Neutral hydrogen, 1420MHz": "H1_1420",
+    "Hydrogen, 1420MHz": "H1_1420",
     "Hydroxyl, 1612MHz": "OH_1612",
     "Hydroxyl, 1665MHz": "OH_1665",
     "Hydroxyl, 1667MHz": "OH_1667",
@@ -114,7 +114,7 @@ def updateParameters():
     dpg.set_value("fft_num", config.getint("Spectral line", "fft_num"))
     dpg.set_value("median", config.getint("Spectral line", "median"))
     dpg.set_value("dc_offset", config.getboolean("Spectral line", "dc_offset"))
-    dpg.set_value("spectral_line", config.get("Spectral line", "spectral_line"))
+    dpg.set_value("spectral_line", list(SPECTRAL_LINES.keys())[list(SPECTRAL_LINES.values()).index(config.get("Spectral line", "spectral_line"))]) # Ooof
 
     dpg.set_value("y_min", config.getfloat("Spectral line", "y_min"))
     dpg.set_value("y_max", config.getfloat("Spectral line", "y_max"))

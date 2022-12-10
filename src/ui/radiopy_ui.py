@@ -16,11 +16,6 @@ def runUI():
     
     # Spectral line window
     lineUI.spectralLineWindow()
-    
-    
-
-    # TODO Dedicated pulsar window
-
 
     dpg.setup_dearpygui()
     dpg.show_viewport()

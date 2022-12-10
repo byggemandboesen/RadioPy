@@ -9,14 +9,15 @@ def listDrivers():
 
     The available drivers are returned as a list of strings
     '''
-
     soapy_drivers = [dict(item) for item in SoapySDR.Device.enumerate()]
     driver_names = [driver["driver"] for driver in soapy_drivers if driver["driver"] != "audio"]
+    
     return driver_names
 
 
 class SDR:
     def __init__(self, driver: str, freq: int = 1420405752, sample_rate: int = 1e6, ppm_offset: int = 0, bins: int = 4096):
+        # TODO - Fix weird(or no) bins being sent to buffer
         
         # Initialize SDR
         self.center_frequency = freq
@@ -136,7 +137,6 @@ class SDR:
         Return the current PPM offset
         '''
         return self.sdr.getFrequencyCorrection(SOAPY_SDR_RX, 0)
-
 
     # ------------------------------- Streaming ------------------------------ #
 

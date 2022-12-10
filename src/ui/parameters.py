@@ -64,3 +64,4 @@ def selectedSDR():
     sdr = SDR(driver)
     sample_rates = sdr.getAvailableSampleRates()
     dpg.configure_item("sample_rate", items = sample_rates)
+    del sdr

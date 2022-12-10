@@ -104,13 +104,6 @@ def spectralLine(config):
     sdr.stopStream()
     # print(f"Execution time: {datetime.utcnow()-start}")
 
-    # TODO
-    '''
-    Do regular sampling and subtration to even spectrum and dc spike.
-    Do FFT without checking for zero/dropped samples and without log()
-    After all samples collected -> do check for 0, log()
-    '''
-
     # Gather observation coordinates and LSR correction
     eq_coords = GS.equatorial(alt, az)
     gal_coords = GS.galactic(alt, az)
@@ -154,32 +147,29 @@ def spectralLine(config):
 
 
 # TODO - This shall be done in UI
-def loadData(path):
-    '''
-    Load data created by this software.
-    Finally, the data is plotted.
-    '''
-    try:
-        print("Loading as csv file")
-        df = pd.read_csv(path)
+# def loadData(path):
+#     '''
+#     Load data created by this software.
+#     Finally, the data is plotted.
+#     '''
+#     try:
+#         print("Loading as csv file")
+#         df = pd.read_csv(path)
         
-        data = np.array(df["Data"])
-        velocities = np.array(df["Velocities"])
-        freqs = np.array(df["Frequencies"])
-        eq_coords = np.array(df["Eq_coords"].dropna())
-        gal_coords = np.array(df["Gal_coords"].dropna())
-        line_name = df["Spectral_line"].dropna().to_string()
-        current_time = df["Observation_time"].dropna().to_string()
-        LSR_correction = float(-df["LSR_correction"].dropna())
-    except:
-        print("Error occured... Please check your file path")
+#         data = np.array(df["Data"])
+#         velocities = np.array(df["Velocities"])
+#         freqs = np.array(df["Frequencies"])
+#         eq_coords = np.array(df["Eq_coords"].dropna())
+#         gal_coords = np.array(df["Gal_coords"].dropna())
+#         line_name = df["Spectral_line"].dropna().to_string()
+#         current_time = df["Observation_time"].dropna().to_string()
+#         LSR_correction = float(-df["LSR_correction"].dropna())
+#     except:
+#         print("Error occured... Please check your file path")
 
-    plot.plotData(data, velocities, line_name, gal_coords, eq_coords, LSR_correction, current_time)
+#     plot.plotData(data, velocities, line_name, gal_coords, eq_coords, LSR_correction, current_time)
 
 
 if __name__ == "__main__":
     main()
     quit()
-
-# TODO
-# If argparse, -noui, run with default values from config.json
