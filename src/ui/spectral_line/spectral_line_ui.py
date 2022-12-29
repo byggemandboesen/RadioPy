@@ -72,5 +72,3 @@ def updateTimeEstimate():
 
     time_estimate = round(bins*ffts/sample_rate, 2)
     dpg.set_value("estimated_time", time_estimate)
-
-

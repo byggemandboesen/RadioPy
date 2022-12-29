@@ -8,9 +8,9 @@ from soapy import SDR
 import dsp as DSP
 from plot import plotData
 
+import matplotlib.pyplot as plt
 
 def runObservation():
-    # Apply current parameters to config
     CB.applyParameters()
     # Load config
     config = CB.loadConfig()
@@ -42,22 +42,24 @@ def runObservation():
     driver = config.get("SDR", "driver")
     sample_rate = config.getint("SDR", "sample_rate")
     PPM_offset = config.getint("SDR", "ppm_offset")
-    bins = config.getint("SDR", "bins")
+    n_bins = config.getint("SDR", "bins")
     
     fft_num = config.getint("Spectral line", "fft_num")
-    median = config.getint("Spectral line", "fft_num")
+    median = config.getint("Spectral line", "median")
     dc_offset = sample_rate/4 if config.getboolean("Spectral line", "dc_offset") and sample_rate >= 32e5 else 0
     spectral_line = config.get("Spectral line", "spectral_line")
 
     # Determine tuning frequency
     rest_freq, line_name = parseSpectralLine(spectral_line)
     sdr_freq = rest_freq - LO_freq - dc_offset
-    sdr = SDR(driver, sdr_freq, sample_rate, PPM_offset, bins)
+    sdr = SDR(driver = driver, freq = sdr_freq, sample_rate = sample_rate, ppm_offset = PPM_offset, bins = n_bins)
+
+    
     # Collect data
-    freqs, data = collectData(sdr, fft_num, bins, rest_freq, dc_offset)
+    freqs, data = collectData(sdr = sdr, fft_num = fft_num, n_bins = n_bins, rest_freq = rest_freq, dc_offset = dc_offset)
     if median > 0:
         data = DSP.applyMedian(bins = data, num = median)
-    
+
 
     # Get antenna sky coordinates
     eq_coords = ANTENNA.getEquatorialCoordinates(GS)
@@ -126,14 +128,14 @@ def collectData(sdr: SDR, fft_num: int, n_bins: int, rest_freq: int, dc_offset: 
     '''
     # Generate list with frequencies
     freqs = np.linspace(rest_freq-sdr.getSampleRate()/2-dc_offset, rest_freq+sdr.getSampleRate()/2-dc_offset, n_bins)
-
+    tmp_bins = np.empty(n_bins, np.complex64)
+    data = np.empty(n_bins, np.complex64)
     sdr.startStream()
-    data = np.zeros(n_bins)
-
     try:
-        for i in range(0,fft_num):
+        for i in range(fft_num):
             tmp_bins = sdr.readFromStream()
             data = np.add(data, DSP.doFFT(tmp_bins, n_bins))
+
         data = np.divide(data, fft_num)
         # Sample a blank part of the spectrum
         # sdr.setFrequency(sdr_freq+1.1*sdr.getSampleRate())
@@ -143,9 +145,9 @@ def collectData(sdr: SDR, fft_num: int, n_bins: int, rest_freq: int, dc_offset: 
         #     blank = np.add(blank, dsp.doFFT(tmp_bins, bins))
         # blank = np.divide(blank, fft_num)
         # data = np.subtract(data, blank)
-        sdr.stopStream()
     except:
         print("Issue when reading bins... Please try again")
-        sdr.stopStream()
+        quit()
+    sdr.stopStream()
 
     return freqs, data
