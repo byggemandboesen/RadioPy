@@ -36,7 +36,11 @@ def parametersWindow(pos: list = [10, 10], w: int = 400, h: int = 500):
         
         # SDR section
         with dpg.collapsing_header(label = "SDR/frontend"):
-            dpg.add_text("SDR")
+            with dpg.group(horizontal=True):
+                dpg.add_text("SDR")
+                dpg.add_spacer(width=100)
+                dpg.add_button(label = "Refresh", width = -150, callback=updateDrivers)
+
             # Determine available soapy devices
             available_drives = soapy.listDrivers()
             dpg.add_combo(available_drives, default_value="none" , label = "Driver", tag="driver", width = -150, callback=selectedSDR)
@@ -55,6 +59,22 @@ def parametersWindow(pos: list = [10, 10], w: int = 400, h: int = 500):
         # dpg.add_button(label = "Apply parameters to config", callback=cb.applyParameters)
 
 
+def updateDrivers():
+    '''
+    Updates the driver dropdown with discovered drivers.
+    Proceeds to also refresh sample rates if device is already chosen.
+    '''
+    current_driver = dpg.get_value("driver")
+    available_drivers = soapy.listDrivers()
+    dpg.configure_item("driver", items = available_drivers)
+    if current_driver != "none" and current_driver in available_drivers:
+        selectedSDR()
+    else:
+        dpg.set_value("driver", "none")
+        dpg.configure_item(item = "sample_rate", items = [])
+        dpg.set_value("sample_rate", 0)
+
+
 def selectedSDR():
     '''
     Gets the selected SDR from dropdown menu.
@@ -63,5 +83,6 @@ def selectedSDR():
     driver = dpg.get_value("driver")
     sdr = SDR(driver)
     sample_rates = sdr.getAvailableSampleRates()
+    dpg.set_value("sample_rate", sample_rates[0])
     dpg.configure_item("sample_rate", items = sample_rates)
     del sdr

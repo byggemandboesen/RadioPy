@@ -27,18 +27,20 @@ Since RadioPy uses python bindings it should be cross platform, however, it may 
 The primary goal for RaioPy is to act as a simple, yet useful, tool for radioastronomy. This means it offers a way to perform observations of different radioastronomical spectral lines with numerous different SDR's.
 
 ### Tested devices
-|             |       Tested       | Buggy |                                                                                                                         Remarks                                                                                                                         |
-|:-----------:|:------------------:|:-----:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|  RTL-SDR V3 | :white_check_mark: |   No  |                                                                                                                           None                                                                                                                          |
-| Nooelec XTR | :white_check_mark: |   No  |                                                                                        Due to the E4000 tuner one might benifit from using the DC offset feature                                                                                        |
-| Airspy mini | :white_check_mark: |  Yes  |                                                                                                                                                                                                                                                         |
-|    HackRF   | :white_check_mark: |  Yes  | - It seems that the highest achievable sample rate greatly depends on the USB port you're using the device with <br> - I've experienced that the HackRF sometimes delivers garbage samples. Disconnecting and reconnecting the device fixes the problem |
+|             |       Tested       | Buggy |                                                                                                                           Remarks                                                                                                                          |
+|:-----------:|:------------------:|:-----:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|  RTL-SDR V3 | :white_check_mark: |   No  |                                                                                                                             None                                                                                                                           |
+| Nooelec XTR | :white_check_mark: |   No  |                                                                                          Due to the E4000 tuner one might benifit from using the DC offset feature                                                                                         |
+| Airspy mini | :white_check_mark: |  Yes  |                                                                                                          On some PC's you may counter a driver error                                                                                                       |
+|    HackRF   | :white_check_mark: |  Yes  | - It seems that the highest achievable sample rate greatly depends on the USB port/PC you're using the device with <br> - I've experienced that the HackRF sometimes delivers garbage samples. Disconnecting and reconnecting the device fixes the problem |
 
 
 This list will likely grow as users report their experience with different devices!<br>
-#### Quick note about the HackRF
+#### Quick note about the HackRF and Airspy mini
 I'm still trying to figure out the reason behind this, but for now I've only been able to do 15MSPS on my main PC and 7MSPS on my older laptop hence my remark shown in the table. However, this will need further investigation. <br>
-I've also yet to figure out the reason behind the garbage samples it sometimes delivers. I also only experience this on my laptop and not on my main PC.
+I've also yet to figure out the reason behind the garbage samples it sometimes delivers. I rarely experience this on my main PC where I can usually fix it by running a couple observations. <br>
+
+With the Airpsy mini I have encountered a bug on my laptop, where it's *missing a driver*. I have yet to find out the reason behind this, as I've never experienced it on my main PC.
 
 ### Performing observation
 The software is mainly designed to be used through the UI, but can also be run through terminal with the help of the configuration file, `config.ini`. To run a quick spectral line observation through the terminal, run:
