@@ -6,9 +6,10 @@ def doFFT(bins, n_bins: int):
     '''
     PSD = (np.abs(np.fft.fft(bins))/n_bins)**2
     PSD = checkForZero(PSD)
-    PSD_log = 10.0*np.log10(PSD)
+    PSD_log = 20.0*np.log10(PSD)
     fft_bins = np.fft.fftshift(PSD_log)
     return fft_bins
+
 
 def checkForZero(bins):
     '''
@@ -23,14 +24,16 @@ def checkForZero(bins):
     # This is especially an issue with HackRF at high sample rates
     return bins
 
+
 def applyMedian(bins, num: int = 10):
     '''
     Perform median smoothing on the given bins
     '''
-    # TODO Improve this for near edge bins
-    for i in range(len(bins)):
-            bins[i] = np.mean(bins[i:i+num])
+    n_bins = len(bins)
+    for i in range(n_bins):
+        bins[i] = np.mean(bins[i:i+num])
     return bins
+
 
 def correctSlant(bins):
     '''
@@ -40,6 +43,7 @@ def correctSlant(bins):
     slope, intersect = np.polyfit(X, bins, 1)
     bins = np.array([bins[i] - (intersect + i * slope) for i in range(len(X))])
     return bins
+
 
 def shiftNoiseFloor(bins):
     '''

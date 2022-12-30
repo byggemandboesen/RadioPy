@@ -74,6 +74,7 @@ def runObservation():
 
     
     # Save data if wanted
+    # TODO - Find out way to store collection parameters maybe
     if config.getboolean("Spectral line", "save_data"):
         file_name = f"observations/{spectral_line.upper()}_{current_time}".replace(" ", "_")
 
