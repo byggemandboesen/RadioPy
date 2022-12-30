@@ -11,7 +11,6 @@ from plot import plotData
 import matplotlib.pyplot as plt
 
 def runObservation():
-    CB.applyParameters()
     # Load config
     config = CB.loadConfig()
     print("Running observation...")
@@ -129,7 +128,7 @@ def collectData(sdr: SDR, fft_num: int, n_bins: int, rest_freq: int, dc_offset: 
     # Generate list with frequencies
     freqs = np.linspace(rest_freq-sdr.getSampleRate()/2-dc_offset, rest_freq+sdr.getSampleRate()/2-dc_offset, n_bins)
     tmp_bins = np.empty(n_bins, np.complex64)
-    data = np.empty(n_bins, np.complex64)
+    data = np.empty(n_bins, np.float16)
     sdr.startStream()
     try:
         for i in range(fft_num):

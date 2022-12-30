@@ -1,7 +1,7 @@
+import os
 import dearpygui.dearpygui as dpg
 
 import ui.callbacks as CB
-import spectral_line as SpectralLine
 
 
 def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
@@ -51,7 +51,7 @@ def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
         with dpg.theme(tag = "run_spectral_button_theme"):
             with dpg.theme_component(dpg.mvButton):
                 dpg.add_theme_color(dpg.mvThemeCol_Button, (15, 86, 136,255))
-        dpg.add_button(label = "Run observation", callback=SpectralLine.runObservation)
+        dpg.add_button(label = "Run observation", callback=beginObservation)
         dpg.bind_item_theme(dpg.last_item(), "run_spectral_button_theme")
         with dpg.group(horizontal=True):
             dpg.add_text("Estimated observation time: ")
@@ -72,3 +72,11 @@ def updateTimeEstimate():
 
     time_estimate = round(bins*ffts/sample_rate, 2)
     dpg.set_value("estimated_time", time_estimate)
+
+
+def beginObservation():
+    '''
+    Starts an observation in another process
+    '''
+    CB.applyParameters()
+    os.system('py radiopy.py -s' if os.name =='nt' else 'python3 radiopy.py -s')
