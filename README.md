@@ -89,9 +89,9 @@ This list will most likely also include more spectral lines in the future. <br>
 In the future, I hope to include a module for pulsar observation as well.
 
 # TODO
+* Consider writing txt with observation parameters and keep only data/velocities/freqs in CSV/FITS
+* Custom frequency input
+* Spectral line data editor/viewer
 * Pulsar module
-* Create UI
 * Improve README
 * Add FITS support
-* Make UI main way of use
-* Make separate processing parameters for pulsar/spetral line

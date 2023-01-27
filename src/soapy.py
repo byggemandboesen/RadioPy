@@ -3,6 +3,7 @@ from SoapySDR import *
 
 import numpy as np
 
+
 def listDrivers():
     '''
     Retreive the available Soapy drivers.
@@ -17,7 +18,6 @@ def listDrivers():
 
 class SDR:
     def __init__(self, driver: str, freq: int = 1420405752, sample_rate: int = 1e6, ppm_offset: int = 0, bins: int = 4096):
-        # TODO - Fix weird(or no) bins being sent to buffer
         
         # Initialize SDR
         self.center_frequency = freq
