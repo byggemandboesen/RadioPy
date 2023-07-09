@@ -19,12 +19,12 @@ DEFAULT_PARAM = {
     "ppm_offset": 0,
     "bins": 4096,
     "fft_num": 1000,
-    "median": 0,
+    "smoothing": 0,
     "dc_offset": False,
     "spectral_line": "Hydrogen, 1420MHz",
     "y_min": 0.0,
     "y_max": 0.0,
-    "save_data": False
+    "save_data": True
 }
 
 # Available spectral lines
@@ -79,7 +79,7 @@ def applyDefaultParameters():
     dpg.set_value("bins", DEFAULT_PARAM["bins"])
 
     dpg.set_value("fft_num", DEFAULT_PARAM["fft_num"])
-    dpg.set_value("median", DEFAULT_PARAM["median"])
+    dpg.set_value("smoothing", DEFAULT_PARAM["smoothing"])
     dpg.set_value("dc_offset", DEFAULT_PARAM["dc_offset"])
     dpg.set_value("spectral_line", DEFAULT_PARAM["spectral_line"])
     dpg.set_value("y_min", DEFAULT_PARAM["y_min"])
@@ -112,7 +112,7 @@ def updateParameters():
     dpg.set_value("bins", config.getint("SDR", "bins"))
 
     dpg.set_value("fft_num", config.getint("Spectral line", "fft_num"))
-    dpg.set_value("median", config.getint("Spectral line", "median"))
+    dpg.set_value("smoothing", config.getint("Spectral line", "smoothing"))
     dpg.set_value("dc_offset", config.getboolean("Spectral line", "dc_offset"))
     dpg.set_value("spectral_line", list(SPECTRAL_LINES.keys())[list(SPECTRAL_LINES.values()).index(config.get("Spectral line", "spectral_line"))]) # Ooof
 
@@ -146,7 +146,7 @@ def applyParameters():
     config.set("SDR", "bins", str(dpg.get_value("bins")))
 
     config.set("Spectral line", "fft_num", str(dpg.get_value("fft_num")))
-    config.set("Spectral line", "median", str(dpg.get_value("median")))
+    config.set("Spectral line", "smoothing", str(dpg.get_value("smoothing")))
     config.set("Spectral line", "dc_offset", str(dpg.get_value("dc_offset")))
     config.set("Spectral line", "spectral_line", SPECTRAL_LINES[str(dpg.get_value("spectral_line"))])
     config.set("Spectral line", "y_min", str(round(dpg.get_value("y_min"), 3)))

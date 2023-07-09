@@ -2,13 +2,11 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
-import ui.callbacks as CB
-from ground_station import Antenna, GroundStation
-from soapy import SDR
-import dsp as DSP
+import ui.config_callbacks as CB
+from processing.ground_station import Antenna, GroundStation
+from processing.soapy import SDR
+import processing.dsp as DSP
 from plot import plotData
-
-import matplotlib.pyplot as plt
 
 def runObservation():
     # Load config
@@ -44,7 +42,7 @@ def runObservation():
     n_bins = config.getint("SDR", "bins")
     
     fft_num = config.getint("Spectral line", "fft_num")
-    median = config.getint("Spectral line", "median")
+    smoothing = config.getint("Spectral line", "smoothing")
     dc_offset = sample_rate/4 if config.getboolean("Spectral line", "dc_offset") and sample_rate >= 32e5 else 0
     spectral_line = config.get("Spectral line", "spectral_line")
 
@@ -56,8 +54,8 @@ def runObservation():
     
     # Collect data
     freqs, data = collectData(sdr = sdr, fft_num = fft_num, n_bins = n_bins, rest_freq = rest_freq, dc_offset = dc_offset)
-    if median > 0:
-        data = DSP.applyMedian(bins = data, num = median)
+    if smoothing > 0:
+        data = DSP.applySmoothing(bins = data, num = smoothing)
 
 
     # Get antenna sky coordinates
@@ -102,6 +100,7 @@ def parseSpectralLine(line: str):
 
     Returns the frequency and name as a tuple (int: freq, str: name)
     '''
+    # TODO - Consider removing this in favor of frequency presets and/or custom frequency input
     spectral_lines = {
         "H1_1420": (1420405752, "Hydrogen, 1420MHz"),
         "OH_1612": (1612231000, "Hydroxyl, 1612MHz"),

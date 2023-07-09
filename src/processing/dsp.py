@@ -25,14 +25,11 @@ def checkForZero(bins):
     return bins
 
 
-def applyMedian(bins, num: int = 10):
+def applySmoothing(bins, num: int = 10):
     '''
     Perform median smoothing on the given bins
     '''
-    n_bins = len(bins)
-    for i in range(n_bins):
-        bins[i] = np.mean(bins[i:i+num])
-    return bins
+    return np.convolve(bins, np.ones(num)/num, 'same')
 
 
 def correctSlant(bins):

@@ -2,21 +2,38 @@ import sys
 import dearpygui.dearpygui as dpg
 
 # Import UI components
-import ui.spectral_line.spectral_line_ui as lineUI
-import ui.parameters as paramUI
-
+import ui.tabs.spectral_line_ui as LINE_UI
+import ui.tabs.parameters as PARAM_UI
+import ui.ui_constants as UI_CONSTS
 
 # Run user interface
 def runUI():
     dpg.create_context()
-    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=830, height=520)
+    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1225, height=625)
     
-    # General parameters/options
-    paramUI.parametersWindow()
-    
-    # Spectral line window
-    lineUI.spectralLineWindow()
+    with dpg.window(label="Main window", pos=[10,10], width=1200, height=600, no_title_bar=True):
 
+        with dpg.group(horizontal=True):
+            with dpg.child_window(width=400):
+                with dpg.tab_bar(reorderable=True):
+                    # General parameters/options
+                    PARAM_UI.parametersTab()
+                    
+                    # Spectral line window
+                    LINE_UI.spectralLineTab()
+
+                    # Editor
+
+
+            with dpg.child_window(width=-1):
+                dpg.add_text("Data viewer")
+
+    
+    # Apply theme
+    theme = UI_CONSTS.defaultTheme()
+    dpg.bind_theme(theme)
+
+    
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()

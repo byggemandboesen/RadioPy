@@ -1,25 +1,25 @@
 import dearpygui.dearpygui as dpg
 
 # Handle devices
-import soapy
-from soapy import SDR
+import processing.soapy as soapy
+from processing.soapy import SDR
 
 # Update spectral line observation time estimate
-from ui.spectral_line.spectral_line_ui import updateTimeEstimate
-import ui.callbacks as cb
+from ui.tabs.spectral_line_ui import updateTimeEstimate
+import ui.config_callbacks as cb
 
 
-def parametersWindow(pos: list = [10, 10], w: int = 400, h: int = 500):
-    with dpg.window(label= "General parameters", width=w, height=h, no_close=True, pos = pos):
+def parametersTab():
+    with dpg.tab(label= "General parameters"):
         
         # Ground station
-        with dpg.collapsing_header(label = "Ground station"):
+        with dpg.collapsing_header(label = "Ground station", default_open=True):
             
             dpg.add_text("Geographic location")
             with dpg.group(horizontal=True):
                 dpg.add_input_float(label = "Lat", width = 150, tag = "lat", min_value=-90, max_value=90)
                 dpg.add_input_float(label = "Lon", width = 150, tag = "lon", max_value=-180, min_value=180)
-            dpg.add_input_float(label = "Elevation", tag = "elev", width = -150, default_value=20)
+            dpg.add_input_float(label = "Elevation", tag = "elev", width = 150, default_value=20)
 
             
             dpg.add_spacer(height=5)
@@ -34,12 +34,13 @@ def parametersWindow(pos: list = [10, 10], w: int = 400, h: int = 500):
             dpg.add_checkbox(label = "Use equatorial coordinates", tag="use_eq_coords", default_value=False)
             
         
+        dpg.add_spacer(height=7.5)
         # SDR section
-        with dpg.collapsing_header(label = "SDR/frontend"):
-            with dpg.group(horizontal=True):
-                dpg.add_text("SDR")
-                dpg.add_spacer(width=100)
-                dpg.add_button(label = "Refresh", width = -150, callback=updateDrivers)
+        with dpg.collapsing_header(label = "SDR/frontend", default_open=True):
+            dpg.add_text("SDR")
+
+            dpg.add_button(label = "Refresh", width = 100, callback=updateDrivers)
+            dpg.bind_item_theme(dpg.last_item(), "button_theme")
 
             # Determine available soapy devices
             available_drives = soapy.listDrivers()
@@ -56,7 +57,7 @@ def parametersWindow(pos: list = [10, 10], w: int = 400, h: int = 500):
         dpg.add_spacer(height=5)
         dpg.add_button(label = "Load config parameters", callback=cb.updateParameters)
         dpg.add_button(label = "Apply defult parameters", callback=cb.applyDefaultParameters)
-        # dpg.add_button(label = "Apply parameters to config", callback=cb.applyParameters)
+        dpg.add_button(label = "Apply parameters to config", callback=cb.applyParameters)
 
 
 def updateDrivers():

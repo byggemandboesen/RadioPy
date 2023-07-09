@@ -6,7 +6,6 @@ import pandas as pd
 sys.path.append("src/")
 sys.dont_write_bytecode = True
 import ui.radiopy_ui as ui
-from ground_station import GroundStation
 
 from spectral_line import runObservation
 

@@ -1,16 +1,16 @@
 import os
 import dearpygui.dearpygui as dpg
 
-import ui.callbacks as CB
+import ui.config_callbacks as CB
 
 
-def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
-    with dpg.window(label= "Spectral line", width=w, height=h, no_close=True, pos=pos):
+def spectralLineTab():
+    with dpg.tab(label= "Spectral line"):
         
-        with dpg.collapsing_header(label = "Data collection"):
+        with dpg.collapsing_header(label = "Data collection", default_open=True):
             dpg.add_input_int(label = "Bins", default_value=4096, tag = "bins", width = -150, callback = updateTimeEstimate)
             dpg.add_input_int(label = "FFT average", default_value=1000, tag = "fft_num", width = -150, callback = updateTimeEstimate)
-            dpg.add_input_int(label = "Median", default_value=0, tag = "median", width = -150, callback = updateTimeEstimate)
+            dpg.add_input_int(label = "Smoothing", default_value=0, tag = "smoothing", width = -150, callback = updateTimeEstimate)
             
             with dpg.group(horizontal=True):
                 dpg.add_checkbox(label = "DC offset", default_value=False, tag = "dc_offset")
@@ -18,8 +18,8 @@ def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
             with dpg.tooltip("dc_offset_tooltip"):
                 dpg.add_text("Offset center frequency to avoid DC spike overlap")
 
-
-        with dpg.collapsing_header(label = "Object"):
+        dpg.add_spacer(height=7.5)
+        with dpg.collapsing_header(label = "Object", default_open=True):
             dpg.add_text("Select spectral line")
             dpg.add_combo(list(CB.SPECTRAL_LINES.keys()), default_value=list(CB.SPECTRAL_LINES.keys())[0], tag = "spectral_line")
             
@@ -30,7 +30,8 @@ def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
             with dpg.tooltip("lsr_tooltip"):
                 dpg.add_text("Correct radial velocity to the local standard of rest")
         
-        with dpg.collapsing_header(label = "Data visualization/saving"):
+        dpg.add_spacer(height=7.5)
+        with dpg.collapsing_header(label = "Data visualization/saving", default_open=True):
             with dpg.group(horizontal=True):
                 dpg.add_text("Plot limits")
                 dpg.add_text("(?)", color=(0,0,255,255), tag = "plot_limits_tooltip")
@@ -43,16 +44,12 @@ def spectralLineWindow(pos: list = [420,10], w: int = 400, h: int = 500):
                 dpg.add_text("Y-axis plot limits. If left to 0,0 axis will be autoscaled")
             
 
-            dpg.add_checkbox(label = "Save data", default_value=False, tag="save_data")
+            dpg.add_checkbox(label = "Save data", default_value=True, tag="save_data")
 
 
         # Run observation section
         dpg.add_spacer(height=10)
-        with dpg.theme(tag = "run_spectral_button_theme"):
-            with dpg.theme_component(dpg.mvButton):
-                dpg.add_theme_color(dpg.mvThemeCol_Button, (15, 86, 136,255))
         dpg.add_button(label = "Run observation", callback=beginObservation)
-        dpg.bind_item_theme(dpg.last_item(), "run_spectral_button_theme")
         with dpg.group(horizontal=True):
             dpg.add_text("Estimated observation time: ")
             dpg.add_text("NaN", tag = "estimated_time")
