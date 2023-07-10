@@ -4,14 +4,15 @@ import dearpygui.dearpygui as dpg
 # Import UI components
 import ui.tabs.spectral_line_ui as LINE_UI
 import ui.tabs.parameters as PARAM_UI
+import ui.tabs.editor as EDITOR_UI
 import ui.ui_constants as UI_CONSTS
 
 # Run user interface
 def runUI():
     dpg.create_context()
-    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1225, height=625)
+    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1225, height=675)
     
-    with dpg.window(label="Main window", pos=[10,10], width=1200, height=600, no_title_bar=True):
+    with dpg.window(label="Main window", pos=[10,10], width=1200, height=650, no_title_bar=True):
 
         with dpg.group(horizontal=True):
             with dpg.child_window(width=400):
@@ -23,6 +24,7 @@ def runUI():
                     LINE_UI.spectralLineTab()
 
                     # Editor
+                    EDITOR_UI.editorTab()
 
 
             with dpg.child_window(width=-1):

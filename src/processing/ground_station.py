@@ -13,19 +13,19 @@ class Antenna:
     '''
     Antenna object containing the following parameters
     Antenna direction in the sky
-     - az
-     - alt
-     - ra
-     - dec
+     - AZ
+     - ALT
+     - RA
+     - DEC
     use_eq_coords       Use equatorial coordinates of antenna position (ra, dec)
-    LO_freq             Frequency of local oscillator in Hz
+    LO_FREQ             Frequency of local oscillator in Hz
     '''
-    az: float
-    alt: float
-    ra: float
-    dec: float
+    AZ: float
+    ALT: float
+    RA: float
+    DEC: float
     use_eq_coords: bool
-    LO_freq: float
+    LO_FREQ: float
     
 
     def getHorizontalCoordinates(self, GS):
@@ -37,12 +37,12 @@ class Antenna:
         Returns [az, alt]
         '''
         if not self.use_eq_coords:
-            return [self.az, self.alt]
+            return [self.AZ, self.ALT]
         
         # Defines GS QTH
         altaz = AltAz(obstime = GS.TIME, location = GS.QTH, pressure = 0*u.bar)
         # Defines sky-coordinate in equatorial coords
-        eq_coord = ICRS(ra=self.ra*u.degree, dec=self.dec*u.degree)
+        eq_coord = ICRS(ra=self.RA*u.degree, dec=self.DEC*u.degree)
         # Convert
         horizontal_coord = eq_coord.transform_to(altaz)
 
@@ -58,10 +58,10 @@ class Antenna:
         Returns [ra, dec]
         '''
         if self.use_eq_coords:
-            return [self.ra, self.dec]
+            return [self.RA, self.DEC]
         
         # Define horizontal coordinates
-        horizontal_coord = AltAz(alt = self.alt*u.degree, az = self.az*u.degree, pressure = 0*u.bar, obstime = GS.TIME,location=GS.QTH)
+        horizontal_coord = AltAz(alt = self.ALT*u.degree, az = self.AZ*u.degree, pressure = 0*u.bar, obstime = GS.TIME,location=GS.QTH)
         # Convert
         eq_coord = SkyCoord(horizontal_coord.transform_to(ICRS()))
 

@@ -2,12 +2,13 @@ import dearpygui.dearpygui as dpg
 import pandas as pd
 import json
 
+import ui.ui_constants as UI_CONSTS
 
-def editorModule():
+def editorTab():
     '''
     Module for observation data viewing and editing
     '''
-    with dpg.collapsing_header(label = "Editor"):
+    with dpg.tab(label = "Editor"):
         dpg.add_text("Load and edit observation data")
 
         dpg.add_text("Load main file")
@@ -29,7 +30,7 @@ def editorModule():
                 dpg.add_file_extension(".csv")
         
 
-        dpg.add_spacer(height=5)
+        dpg.add_spacer(height=UI_CONSTS.H_COLL_HEAD_SPACER)
 
         # Show observaiton info in table
         with dpg.tree_node(label = "File info"):
