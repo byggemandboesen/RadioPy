@@ -28,13 +28,13 @@ class Antenna:
     LO_FREQ: float
     
 
-    def getHorizontalCoordinates(self, GS):
+    def getHorizontalCoordinates(self, GS) -> tuple:
         '''
         Return horizontal coordinates of antenna direction.
 
         Takes the respective ground station as argument (instance of GroundStation)
 
-        Returns [az, alt]
+        Returns (az, alt)
         '''
         if not self.use_eq_coords:
             return [self.AZ, self.ALT]
@@ -46,16 +46,16 @@ class Antenna:
         # Convert
         horizontal_coord = eq_coord.transform_to(altaz)
 
-        return [round(horizontal_coord.az.degree, 3), round(horizontal_coord.alt.degree, 3)]
+        return horizontal_coord.az.degree, horizontal_coord.alt.degree
         
 
-    def getEquatorialCoordinates(self, GS):
+    def getEquatorialCoordinates(self, GS) -> tuple:
         '''
         Return equatorial coordinates of antenna direction.
 
         Takes the respective ground station as argument (instance of GroundStation)
 
-        Returns [ra, dec]
+        Returns (ra, dec)
         '''
         if self.use_eq_coords:
             return [self.RA, self.DEC]
@@ -65,16 +65,16 @@ class Antenna:
         # Convert
         eq_coord = SkyCoord(horizontal_coord.transform_to(ICRS()))
 
-        return [round(eq_coord.ra.degree, 3), round(eq_coord.dec.degree, 3)]
+        return eq_coord.ra.degree, eq_coord.dec.degree
     
 
-    def getGalacticCoordinates(self, GS):
+    def getGalacticCoordinates(self, GS) -> tuple:
         '''
         Return galactic coordinates of antenna direction.
 
         Takes the respective ground station as argument (instance of GroundStation)
 
-        Returns [lon (l), lat (b)]
+        Returns (lon (l), lat (b))
         '''
         # Define local horizontal coordinate
         az_alt = self.getHorizontalCoordinates(GS)
@@ -82,7 +82,7 @@ class Antenna:
         # Convert
         gal_coord = horizontal_coord.transform_to(Galactic())
 
-        return [round(gal_coord.l.degree, 3), round(gal_coord.b.degree, 3)]
+        return gal_coord.l.degree, gal_coord.b.degree
 
 
 class GroundStation:
@@ -118,7 +118,7 @@ class GroundStation:
         return freq.value
 
 
-    def getLSRCorrection(self, ra, dec):
+    def getLSRCorrection(self, ra, dec) -> float:
         '''
         Compute the necessary velocity correction for LSR reference frame
         '''
@@ -134,5 +134,5 @@ class GroundStation:
         obs_wrt_bary = ICRS(ra=ra*u.degree, dec=dec*u.degree, pm_ra_cosdec=0*u.mas/u.yr, pm_dec=0*u.mas/u.yr, radial_velocity=bary_corr, distance = 1*u.pc)
         LSR_corr = obs_wrt_bary.transform_to(LSRK()).radial_velocity
 
-        return round(LSR_corr.value, 3)
+        return LSR_corr.value
 

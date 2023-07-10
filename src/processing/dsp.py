@@ -8,6 +8,7 @@ def doFFT(bins, n_bins: int):
     PSD = checkForZero(PSD)
     PSD_log = 10.0*np.log10(PSD)
     fft_bins = np.fft.fftshift(PSD_log)
+    # fft_bins = np.fft.fftshift(PSD)
     return fft_bins
 
 

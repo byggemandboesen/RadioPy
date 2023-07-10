@@ -49,7 +49,7 @@ def plotData(data, velocities, line_name, gal_coords, eq_coords, lsr, time, plot
     table.scale(1,3)
     
     # Plot spectrum
-    spectrum_ax.plot(velocities, data, color = "b", linewidth = 0.75, label = "Observed data")
+    spectrum_ax.step(velocities, data, color = "b", linewidth = 0.75, label = "Observed data")
     spectrum_ax.set(xlim = (velocities[0], velocities[-1]))
     spectrum_ax.set(xlabel = r"Radial velocity [$\frac{km}{s}$]") # , ylabel = r"SNR [$dB$]"
     if plot_limits != (0,0):
@@ -61,6 +61,6 @@ def plotData(data, velocities, line_name, gal_coords, eq_coords, lsr, time, plot
     # Add legend, gridlines and padding
     spectrum_ax.legend(prop = {'size': 10}, loc = 1)
     plt.tight_layout(pad=1.5)
-    file_path = f"./observations/{line_name.replace(', ', '_')}_{time}.png"
-    plt.savefig(file_path.replace(" ", "_"), dpi = 150)
+    file_path = f"./observations/{time}.png"
+    plt.savefig(file_path, dpi = 150)
     # plt.show()

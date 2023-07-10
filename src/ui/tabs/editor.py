@@ -1,6 +1,6 @@
 import dearpygui.dearpygui as dpg
 import pandas as pd
-import json
+import os
 
 import ui.ui_constants as UI_CONSTS
 
@@ -11,18 +11,18 @@ def editorTab():
     with dpg.tab(label = "Editor"):
         dpg.add_text("Load and edit observation data")
 
-        dpg.add_text("Load main file")
+        dpg.add_text("Load file")
         with dpg.group(horizontal=True):
-            dpg.add_input_text(hint = "Main file path", width = -200, tag = "main_path", callback = pathChanged)
+            dpg.add_input_text(hint = "Main file path", width = UI_CONSTS.W_TXT_INP, tag = "main_path", callback = pathChanged)
             dpg.add_button(label = "Browse", callback=lambda: dpg.show_item("main_dialog"))
             
             # File dialog
-            with dpg.file_dialog(label = "Browse", directory_selector= False, show = False, tag = "main_dialog", callback=fileDialogCallback):
-                dpg.add_file_extension(".csv")
+            with dpg.file_dialog(label = "Browse", show = False, tag = "main_dialog", width=600, height=400, default_path=os.getcwd(), callback=fileDialogCallback):
+                dpg.add_file_extension(".csv", color=(0, 255, 0, 255))
             
         dpg.add_text("Load secondary file")
         with dpg.group(horizontal=True):
-            dpg.add_input_text(hint = "Secondary file path", width = -200, tag = "secondary_path", callback = pathChanged)
+            dpg.add_input_text(hint = "Secondary file path", width = UI_CONSTS.W_TXT_INP, tag = "secondary_path", callback = pathChanged)
             dpg.add_button(label = "Browse", callback=lambda: dpg.show_item("secondary_dialog"))
             
             # File dialog

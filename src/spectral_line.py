@@ -28,6 +28,7 @@ def runObservation():
 
     ANTENNA = Antenna(az, alt, ra, dec, use_eq_coords, LO_freq)
     current_time = datetime.utcnow()
+    formatted_time = current_time.strftime("%d_%m_%Y_%H_%M_%S")
     GS = GroundStation(lat, lon, elev, current_time, lsr_correct, ANTENNA)
 
     
@@ -68,13 +69,13 @@ def runObservation():
 
     # Finally, plot the data
     y_limits = (config.getfloat("Spectral line", "y_min"), config.getfloat("Spectral line", "y_max"))
-    plotData(data, radial_velocities, line_name, gal_coords, eq_coords, lsr_correction, current_time, y_limits)
+    plotData(data, radial_velocities, line_name, gal_coords, eq_coords, lsr_correction, formatted_time, y_limits)
 
     
     # Save data if wanted
     # TODO - Find out way to store collection parameters maybe
     if config.getboolean("Spectral line", "save_data"):
-        file_name = f"observations/{spectral_line.upper()}_{current_time}".replace(" ", "_")
+        file_name = f"observations/{rest_freq}_{formatted_time}"
 
         # Thanks to this fix
         # https://python.plainenglish.io/a-quick-trick-to-make-dataframes-with-uneven-array-lengths-32bf80d8a61d
