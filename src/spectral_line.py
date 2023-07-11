@@ -41,14 +41,13 @@ def runObservation():
     sample_rate = config.getint("SDR", "sample_rate")
     PPM_offset = config.getint("SDR", "ppm_offset")
     n_bins = config.getint("SDR", "bins")
+    rest_freq = config.getint("SDR", "frequency")
     
     fft_num = config.getint("Spectral line", "fft_num")
     smoothing = config.getint("Spectral line", "smoothing")
     dc_offset = sample_rate/4 if config.getboolean("Spectral line", "dc_offset") and sample_rate >= 32e5 else 0
-    spectral_line = config.get("Spectral line", "spectral_line")
 
     # Determine tuning frequency
-    rest_freq, line_name = parseSpectralLine(spectral_line)
     sdr_freq = rest_freq - LO_freq - dc_offset
     sdr = SDR(driver = driver, freq = sdr_freq, sample_rate = sample_rate, ppm_offset = PPM_offset, bins = n_bins)
 
@@ -69,7 +68,7 @@ def runObservation():
 
     # Finally, plot the data
     y_limits = (config.getfloat("Spectral line", "y_min"), config.getfloat("Spectral line", "y_max"))
-    plotData(data, radial_velocities, line_name, gal_coords, eq_coords, lsr_correction, formatted_time, y_limits)
+    plotData(data, radial_velocities, "LINE_NAME", gal_coords, eq_coords, lsr_correction, formatted_time, y_limits)
 
     
     # Save data if wanted
@@ -82,11 +81,10 @@ def runObservation():
 
         df_data = {
             "Data": data,
-            "Velocities": radial_velocities,
             "Frequencies": freqs,
+            "Velocities": radial_velocities,
             "Eq_coords": eq_coords,
             "Gal_coords": gal_coords,
-            "Spectral_line": line_name,
             "Observation_time": current_time,
             "LSR_correction": -lsr_correction
         }
@@ -95,26 +93,26 @@ def runObservation():
         df.to_csv(f"{file_name}.csv", index = False)
 
 
-def parseSpectralLine(line: str):
-    '''
-    Get the frequency and name of a given spectral line.
+# def parseSpectralLine(line: str):
+#     '''
+#     Get the frequency and name of a given spectral line.
 
-    Returns the frequency and name as a tuple (int: freq, str: name)
-    '''
-    # TODO - Consider removing this in favor of frequency presets and/or custom frequency input
-    spectral_lines = {
-        "H1_1420": (1420405752, "Hydrogen, 1420MHz"),
-        "OH_1612": (1612231000, "Hydroxyl, 1612MHz"),
-        "OH_1665": (1665402000, "Hydroxyl, 1665MHz"),
-        "OH_1667": (1667359000, "Hydroxyl, 1667MHz"),
-        "OH_1720": (1720530000, "Hydroxyl, 1720MHz"),
-    }
+#     Returns the frequency and name as a tuple (int: freq, str: name)
+#     '''
+#     # TODO - Consider removing this in favor of frequency presets and/or custom frequency input
+#     spectral_lines = {
+#         "H1_1420": (1420405752, "Hydrogen, 1420MHz"),
+#         "OH_1612": (1612231000, "Hydroxyl, 1612MHz"),
+#         "OH_1665": (1665402000, "Hydroxyl, 1665MHz"),
+#         "OH_1667": (1667359000, "Hydroxyl, 1667MHz"),
+#         "OH_1720": (1720530000, "Hydroxyl, 1720MHz"),
+#     }
 
-    if line.upper() not in spectral_lines.keys():
-        print("Invalid line name. Please check the README for all spectral line names")
-        quit()
-    else:
-        return spectral_lines[line.upper()]
+#     if line.upper() not in spectral_lines.keys():
+#         print("Invalid line name. Please check the README for all spectral line names")
+#         quit()
+#     else:
+#         return spectral_lines[line.upper()]
 
 
 def collectData(sdr: SDR, fft_num: int, n_bins: int, rest_freq: int, dc_offset: int):

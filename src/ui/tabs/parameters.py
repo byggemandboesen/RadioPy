@@ -37,10 +37,12 @@ def parametersTab():
         dpg.add_spacer(height=UI_CONSTS.H_COLL_HEAD_SPACER)
         # SDR section
         with dpg.collapsing_header(label = "SDR/frontend", default_open=True):
-            dpg.add_text("SDR")
-
-            dpg.add_button(label = "Refresh", width = 100, callback=updateDrivers)
-            dpg.bind_item_theme(dpg.last_item(), "button_theme")
+            
+            with dpg.group(horizontal=True):
+                dpg.add_text("SDR")
+                dpg.add_spacer(width=100)
+                dpg.add_button(label = "Refresh", width=UI_CONSTS.W_TXT_INP, callback=updateDrivers)
+                dpg.bind_item_theme(dpg.last_item(), "button_theme")
 
             # Determine available soapy devices
             available_drives = soapy.listDrivers()
@@ -49,10 +51,14 @@ def parametersTab():
             # SDR sample rates are added once device is selected
             dpg.add_combo([], label = "Sample rate (MHz)", tag = "sample_rate", width = UI_CONSTS.W_NUM_INP_SING_COL, callback=updateTimeEstimate)
             dpg.add_input_int(label = "PPM offset", default_value = 0, tag = "ppm_offset", width = UI_CONSTS.W_NUM_INP_SING_COL)
+            dpg.add_input_int(label="Center frequency (Hz)", width=UI_CONSTS.W_NUM_INP_SING_COL, default_value=1420405752, tag="frequency")
+            dpg.add_combo(label="Frequency presets", items=updateFrequency(), width=UI_CONSTS.W_TXT_INP, callback=updateFrequency, tag="freq_preset")
+            
 
             dpg.add_spacer(height=5)
             dpg.add_text("Downconverter")
             dpg.add_input_int(label = "LO frequency", default_value=0, width=UI_CONSTS.W_NUM_INP_SING_COL, tag = "lo_freq")
+            # TODO - Maybe add checkbox if LO > center freq
         
         
         dpg.add_spacer(height=5)
@@ -88,3 +94,25 @@ def selectedSDR():
     dpg.set_value("sample_rate", sample_rates[0])
     dpg.configure_item("sample_rate", items = sample_rates)
     del sdr
+
+
+def updateFrequency() -> list:
+    '''
+    Updates frequency based on loaded preset
+    https://splatalogue.online/
+    '''
+    presets = {
+        "H1, 1420": 1420405752,
+        "OH, 1612": 1612230900,
+        "OH, 1665": 1665402000,
+        "OH, 1667": 1665401800,
+        "OH, 1720": 1720529900,
+    }
+
+    selected_preset = dpg.get_value("freq_preset")
+
+    if selected_preset != None:
+        freq = presets[dpg.get_value("freq_preset")]
+        dpg.set_value("frequency", freq)
+
+    return list(presets.keys())

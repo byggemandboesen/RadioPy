@@ -8,6 +8,7 @@ def spectralLineTab():
     with dpg.tab(label= "Spectral line"):
         
         with dpg.collapsing_header(label = "Data collection", default_open=True):
+            dpg.add_text("Configure data collection parameters")
             dpg.add_input_int(label = "Bins", default_value=4096, tag = "bins", width = UI_CONSTS.W_NUM_INP_SING_COL, callback = updateTimeEstimate)
             dpg.add_input_int(label = "FFT average", default_value=1000, tag = "fft_num", width = UI_CONSTS.W_NUM_INP_SING_COL, callback = updateTimeEstimate)
             dpg.add_input_int(label = "Smoothing", default_value=0, tag = "smoothing", width = UI_CONSTS.W_NUM_INP_SING_COL, callback = updateTimeEstimate)
@@ -17,12 +18,6 @@ def spectralLineTab():
                 dpg.add_text("(?)", color=(0,0,255,255), tag = "dc_offset_tooltip")
             with dpg.tooltip("dc_offset_tooltip"):
                 dpg.add_text("Offset center frequency to avoid DC spike overlap")
-
-
-        dpg.add_spacer(height=UI_CONSTS.H_COLL_HEAD_SPACER)
-        with dpg.collapsing_header(label = "Object", default_open=True):
-            dpg.add_text("Select spectral line")
-            dpg.add_combo(list(CB.SPECTRAL_LINES.keys()), default_value=list(CB.SPECTRAL_LINES.keys())[0], tag = "spectral_line")
             
             with dpg.group(horizontal=True):
                 dpg.add_checkbox(label = "Correct for LSR", tag="lsr_correct", default_value=True)
@@ -30,8 +25,12 @@ def spectralLineTab():
 
             with dpg.tooltip("lsr_tooltip"):
                 dpg.add_text("Correct radial velocity to the local standard of rest")
-        
-        
+
+        # dpg.add_spacer(height=UI_CONSTS.H_COLL_HEAD_SPACER)
+        # with dpg.collapsing_header(label = "Object", default_open=True):
+        #     dpg.add_text("Select spectral line")
+        #     dpg.add_combo(list(CB.SPECTRAL_LINES.keys()), default_value=list(CB.SPECTRAL_LINES.keys())[0], tag = "spectral_line")
+            
         dpg.add_spacer(height=UI_CONSTS.H_COLL_HEAD_SPACER)
         with dpg.collapsing_header(label = "Data visualization/saving", default_open=True):
             with dpg.group(horizontal=True):

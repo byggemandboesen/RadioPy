@@ -18,22 +18,13 @@ DEFAULT_PARAM = {
     "sample_rate": 0,
     "ppm_offset": 0,
     "bins": 4096,
+    "frequency": 1420405752,
     "fft_num": 1000,
     "smoothing": 0,
     "dc_offset": False,
-    "spectral_line": "Hydrogen, 1420MHz",
     "y_min": 0.0,
     "y_max": 0.0,
     "save_data": True
-}
-
-# Available spectral lines
-SPECTRAL_LINES = {
-    "Hydrogen, 1420MHz": "H1_1420",
-    "Hydroxyl, 1612MHz": "OH_1612",
-    "Hydroxyl, 1665MHz": "OH_1665",
-    "Hydroxyl, 1667MHz": "OH_1667",
-    "Hydroxyl, 1720MHz": "OH_1720"
 }
 
 
@@ -77,11 +68,11 @@ def applyDefaultParameters():
     dpg.set_value("sample_rate", DEFAULT_PARAM["sample_rate"])
     dpg.set_value("ppm_offset", DEFAULT_PARAM["ppm_offset"])
     dpg.set_value("bins", DEFAULT_PARAM["bins"])
+    dpg.set_value("frequency", DEFAULT_PARAM["frequency"])
 
     dpg.set_value("fft_num", DEFAULT_PARAM["fft_num"])
     dpg.set_value("smoothing", DEFAULT_PARAM["smoothing"])
     dpg.set_value("dc_offset", DEFAULT_PARAM["dc_offset"])
-    dpg.set_value("spectral_line", DEFAULT_PARAM["spectral_line"])
     dpg.set_value("y_min", DEFAULT_PARAM["y_min"])
     dpg.set_value("y_max", DEFAULT_PARAM["y_max"])
     dpg.set_value("save_data", DEFAULT_PARAM["save_data"])
@@ -110,11 +101,11 @@ def updateParameters():
     dpg.set_value("sample_rate", config.getint("SDR", "sample_rate"))
     dpg.set_value("ppm_offset", config.getint("SDR", "ppm_offset"))
     dpg.set_value("bins", config.getint("SDR", "bins"))
+    dpg.set_value("bins", config.getint("SDR", "frequency"))
 
     dpg.set_value("fft_num", config.getint("Spectral line", "fft_num"))
     dpg.set_value("smoothing", config.getint("Spectral line", "smoothing"))
     dpg.set_value("dc_offset", config.getboolean("Spectral line", "dc_offset"))
-    dpg.set_value("spectral_line", list(SPECTRAL_LINES.keys())[list(SPECTRAL_LINES.values()).index(config.get("Spectral line", "spectral_line"))]) # Ooof
 
     dpg.set_value("y_min", config.getfloat("Spectral line", "y_min"))
     dpg.set_value("y_max", config.getfloat("Spectral line", "y_max"))
@@ -144,11 +135,11 @@ def applyParameters():
     config.set("SDR", "sample_rate", str(dpg.get_value("sample_rate")) if str(dpg.get_value("sample_rate")) != "" else 0)
     config.set("SDR", "ppm_offset", str(dpg.get_value("ppm_offset")))
     config.set("SDR", "bins", str(dpg.get_value("bins")))
+    config.set("SDR", "frequency", str(dpg.get_value("frequency")))
 
     config.set("Spectral line", "fft_num", str(dpg.get_value("fft_num")))
     config.set("Spectral line", "smoothing", str(dpg.get_value("smoothing")))
     config.set("Spectral line", "dc_offset", str(dpg.get_value("dc_offset")))
-    config.set("Spectral line", "spectral_line", SPECTRAL_LINES[str(dpg.get_value("spectral_line"))])
     config.set("Spectral line", "y_min", str(round(dpg.get_value("y_min"), 3)))
     config.set("Spectral line", "y_max", str(round(dpg.get_value("y_max"), 3)))
     config.set("Spectral line", "save_data", str(dpg.get_value("save_data")))
