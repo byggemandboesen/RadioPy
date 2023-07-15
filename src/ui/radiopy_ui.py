@@ -5,6 +5,7 @@ import dearpygui.dearpygui as dpg
 import ui.tabs.spectral_line_ui as LINE_UI
 import ui.tabs.parameters as PARAM_UI
 import ui.tabs.editor as EDITOR_UI
+import ui.tabs.info as INFO
 import ui.ui_constants as UI_CONSTS
 
 # Run user interface
@@ -25,6 +26,9 @@ def runUI():
 
                     # Editor
                     EDITOR_UI.editorTab()
+
+                    # Info
+                    INFO.infoTab()
 
 
             with dpg.child_window(width=-1):

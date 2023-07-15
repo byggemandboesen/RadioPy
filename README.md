@@ -67,23 +67,23 @@ driver = none               # [str]   SDR driver to use
 sample_rate = 0             # [float] Sample rate of SDR
 ppm_offset = 0              # [float] PPM offset of SDR
 bins = 4096                 # [float] Bins per FFT
+frequency = 1420405752      # [int]   Center frequency
 
 [Spectral line] 
 fft_num = 1000              # [float] Number of FFTs to average
 median = 0                  # [float] Bins to include in median smoothing
 dc_offset = False           # [bool]  Offset center frequency to avoid DC spike overlap
-spectral_line = H1_1420     # [str]   Spectral line to observe
 y_min = 0.0                 # [float] y-axis minimum
 y_max = 0.0                 # [float] y-axis maximum
-save_data = False           # [bool] Export observation data as csv file
+save_data = True            # [bool]  Export observation data as csv file
 ```
 **Thorough description of config parameters coming soon**
-A list of spectral lines can be found here:
-* H1_1420 - Neutral hydrogen, 1420MHz
-* OH_1612 - Hydroxyl, 1612MHz
-* OH_1665 - Hydroxyl, 1665MHz
-* OH_1667 - Hydroxyl, 1667MHz
-* OH_1720 - Hydroxyl, 1720MHz
+The frequency can be set from a certain number of spectral line presets:
+* H1, 1420 - Neutral hydrogen, 1420MHz
+* OH, 1612 - Hydroxyl, 1612MHz
+* OH, 1665 - Hydroxyl, 1665MHz
+* OH, 1667 - Hydroxyl, 1667MHz
+* OH, 1720 - Hydroxyl, 1720MHz
 
 This list will most likely also include more spectral lines in the future. <br>
 In the future, I hope to include a module for pulsar observation as well.
