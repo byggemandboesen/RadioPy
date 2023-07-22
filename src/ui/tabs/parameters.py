@@ -9,7 +9,7 @@ from ui.tabs.spectral_line_ui import updateTimeEstimate
 import ui.config_callbacks as cb
 import ui.ui_constants as UI_CONSTS
 
-def parametersTab():
+def parametersTab() -> None:
     with dpg.tab(label= "General parameters"):
         
         # Ground station
@@ -67,7 +67,7 @@ def parametersTab():
         dpg.add_button(label = "Apply parameters to config", callback=cb.applyParameters)
 
 
-def updateDrivers():
+def updateDrivers() -> None:
     '''
     Updates the driver dropdown with discovered drivers.
     Proceeds to also refresh sample rates if device is already chosen.
@@ -83,7 +83,7 @@ def updateDrivers():
         dpg.set_value("sample_rate", 0)
 
 
-def selectedSDR():
+def selectedSDR() -> None:
     '''
     Gets the selected SDR from dropdown menu.
     Proceeds to update sample rate dropdown with specific SDR sample rates

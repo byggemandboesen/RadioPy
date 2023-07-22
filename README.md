@@ -66,13 +66,13 @@ lo_freq = 0                 # [float] Optional LO frequency for downconverters
 driver = none               # [str]   SDR driver to use
 sample_rate = 0             # [float] Sample rate of SDR
 ppm_offset = 0              # [float] PPM offset of SDR
-bins = 4096                 # [float] Bins per FFT
+bins = 1024                 # [float] Bins per FFT
 frequency = 1420405752      # [int]   Center frequency
 
 [Spectral line] 
 fft_num = 1000              # [float] Number of FFTs to average
 median = 0                  # [float] Bins to include in median smoothing
-dc_offset = False           # [bool]  Offset center frequency to avoid DC spike overlap
+redshift = 0.0              # [float] Redshift of observed target
 y_min = 0.0                 # [float] y-axis minimum
 y_max = 0.0                 # [float] y-axis maximum
 save_data = True            # [bool]  Export observation data as csv file

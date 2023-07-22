@@ -4,24 +4,24 @@ import dearpygui.dearpygui as dpg
 
 # Default parameters
 DEFAULT_PARAM = {
-    "lat": 0,
-    "lon": 0,
-    "elev": 20,
+    "lat": 0.0,
+    "lon": 0.0,
+    "elev": 20.0,
     "lsr_correct": True,
-    "az": 0,
-    "alt": 0,
-    "ra": 0,
-    "dec": 0,
+    "az": 0.0,
+    "alt": 0.0,
+    "ra": 0.0,
+    "dec": 0.0,
     "use_eq_coords": False,
     "lo_freq": 0,
     "driver": "none",
     "sample_rate": 0,
     "ppm_offset": 0,
-    "bins": 4096,
+    "bins": 1024,
     "frequency": 1420405752,
     "fft_num": 1000,
     "smoothing": 0,
-    "dc_offset": False,
+    "redshift": 0.0,
     "y_min": 0.0,
     "y_max": 0.0,
     "save_data": True
@@ -72,7 +72,7 @@ def applyDefaultParameters():
 
     dpg.set_value("fft_num", DEFAULT_PARAM["fft_num"])
     dpg.set_value("smoothing", DEFAULT_PARAM["smoothing"])
-    dpg.set_value("dc_offset", DEFAULT_PARAM["dc_offset"])
+    dpg.set_value("redshift", DEFAULT_PARAM["redshift"])
     dpg.set_value("y_min", DEFAULT_PARAM["y_min"])
     dpg.set_value("y_max", DEFAULT_PARAM["y_max"])
     dpg.set_value("save_data", DEFAULT_PARAM["save_data"])
@@ -105,7 +105,7 @@ def updateParameters():
 
     dpg.set_value("fft_num", config.getint("Spectral line", "fft_num"))
     dpg.set_value("smoothing", config.getint("Spectral line", "smoothing"))
-    dpg.set_value("dc_offset", config.getboolean("Spectral line", "dc_offset"))
+    dpg.set_value("redshift", config.getfloat("Spectral line", "redshift"))
 
     dpg.set_value("y_min", config.getfloat("Spectral line", "y_min"))
     dpg.set_value("y_max", config.getfloat("Spectral line", "y_max"))
@@ -139,7 +139,7 @@ def applyParameters():
 
     config.set("Spectral line", "fft_num", str(dpg.get_value("fft_num")))
     config.set("Spectral line", "smoothing", str(dpg.get_value("smoothing")))
-    config.set("Spectral line", "dc_offset", str(dpg.get_value("dc_offset")))
+    config.set("Spectral line", "redshift", str(dpg.get_value("redshift")))
     config.set("Spectral line", "y_min", str(round(dpg.get_value("y_min"), 3)))
     config.set("Spectral line", "y_max", str(round(dpg.get_value("y_max"), 3)))
     config.set("Spectral line", "save_data", str(dpg.get_value("save_data")))
