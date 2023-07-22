@@ -102,11 +102,11 @@ def updateFrequency() -> list:
     https://splatalogue.online/
     '''
     presets = {
-        "H1, 1420": 1420405752,
-        "OH, 1612": 1612230900,
-        "OH, 1665": 1665402000,
-        "OH, 1667": 1665401800,
-        "OH, 1720": 1720529900,
+        "H1, 1420MHz": 1420405752,
+        "OH, 1612MHz": 1612230900,
+        "OH, 1665MHz": 1665402000,
+        "OH, 1667MHz": 1665401800,
+        "OH, 1720MHz": 1720529900,
     }
 
     selected_preset = dpg.get_value("freq_preset")

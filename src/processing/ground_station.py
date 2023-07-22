@@ -123,14 +123,14 @@ class GroundStation:
         '''
         Convert observed frequency to rest frame frequency
         '''
-        return freqs/(1+redshift)
+        return freqs*(1+redshift)
 
 
     def restFreqToObserver(self, freqs: np.ndarray | float, redshift: float) -> np.ndarray | float:
         '''
         Convert rest frame frequency to observer frequency
         '''
-        return freqs*(1+redshift)
+        return freqs/(1+redshift)
 
 
     def getLSRCorrection(self, ra, dec) -> float:

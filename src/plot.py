@@ -2,65 +2,54 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
 
-def plotData(data, velocities, line_name, gal_coords, eq_coords, lsr, time, plot_limits = (0,0)):
+def plotData(data: np.ndarray, obs_freq: np.ndarray, rest_freq: np.ndarray, time, plot_limits = (0,0)) -> None:
     '''
     Plot the data from an observation
 
     data        - ndarray of observation data
 
-    velocities  - ndarray of radial velocity
+    obs_freq    - observer frame frequencies
 
-    line_name   - String of line name
-
-    gal_coords  - ndarray with [lon, lat]
-
-    eq_coords   - ndarray with [ra, dec]
-
-    lsr         - float LSR correction in km/s
+    rest_freq   - rest frame frequencies
 
     time        - datetime of time of observation
 
     plot_limits - tuple of y-axis limits (max,min)
     '''
+    FS_label = 16
+    FS_ticks = 12
+    FS_title = 18
+    FS_legend = 14
+    
     # Create figure and title
-    fig = plt.figure(figsize=(10,7))
-    fig.suptitle(f"Observation at: {time}", fontsize=16)
+    fig, ax = plt.subplots(1, 1, figsize=(9,6))
+    fig.suptitle(f"Observation at: {time}", fontsize=FS_title)
+    secax = ax.twiny()
     
-    # Add grid for table and plot
-    grid = fig.add_gridspec(5,1)
-    table_ax = fig.add_subplot(grid[0,0])
-    spectrum_ax = fig.add_subplot(grid[1:,0])
+    # Plot spectrum and format ax
+    ax.step(obs_freq, data, color = "b", linewidth = 0.75, label = "Observed data")
+    ax.set(xlim=(obs_freq[0], obs_freq[-1]))
+    secax.set(xlim=(rest_freq[0], rest_freq[-1]))
+    ax.set_xlabel(r"Observer frame frequency [$Hz$]", fontsize = FS_label)
+    secax.set_xlabel(r"Rest frame frequency [$Hz$]", fontsize = FS_label)
 
-    # Plot table with details
-    table_ax.axis("off")
-    labels = ["Spectral line", r"Galactic $l$/$b$", r"Equatorial $RA$/$Dec$", "LSR correction"]
-    values = [[line_name, fr"{gal_coords[0]}$^\circ$ / {gal_coords[1]}$^\circ$", fr"{eq_coords[0]}$^\circ$ / {eq_coords[1]}$^\circ$", f"{-lsr}" + r" $\frac{km}{s}$"]]
-    color = [colors.to_rgba("b", 0.5)]*len(labels)
-    table = table_ax.table(cellText = values, colLabels = labels, colColours = color, cellLoc = "center", loc="center")
-    table.auto_set_font_size(False)
-
-    # Set font size of column labels and cell values
-    for cell in table._cells:
-        if cell[0] != 0:
-            table._cells[cell].set_fontsize(12)
-        else:
-            table._cells[cell].set_fontsize(16)
-
-    table.scale(1,3)
     
-    # Plot spectrum
-    spectrum_ax.step(velocities, data, color = "b", linewidth = 0.75, label = "Observed data")
-    spectrum_ax.set(xlim = (velocities[0], velocities[-1]))
-    spectrum_ax.set(xlabel = r"Radial velocity [$\frac{km}{s}$]") # , ylabel = r"SNR [$dB$]"
     if plot_limits != (0,0):
-        spectrum_ax.set(ylim=plot_limits)
+        ax.set(ylim=plot_limits)
 
     # Plot 0 km/s reference line
-    spectrum_ax.axvline(x = 0, color = colors.to_rgba('k', 0.5), linestyle = ':', linewidth = 1, label = 'Theoretical frequency')
+    # ax.axvline(x = 0, color = colors.to_rgba('k', 0.5), linestyle = ':', linewidth = 1, label = 'Theoretical frequency')
     
     # Add legend, gridlines and padding
-    spectrum_ax.legend(prop = {'size': 10}, loc = 1)
-    plt.tight_layout(pad=1.5)
+    ax.minorticks_on()
+    ax.tick_params(labelsize=FS_ticks)
+    secax.minorticks_on()
+    secax.tick_params(labelsize=FS_ticks)
+    ax.grid(alpha=0.5)
+    ax.legend(fontsize=FS_legend, loc=1, fancybox=False, edgecolor="black")
+    plt.tight_layout()
+
+    # Save
     file_path = f"./observations/{time}.png"
     plt.savefig(file_path, dpi = 150)
     # plt.show()

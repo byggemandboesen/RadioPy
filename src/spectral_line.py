@@ -69,7 +69,7 @@ def runObservation():
 
     # Finally, plot the data
     y_limits = (config.getfloat("Spectral line", "y_min"), config.getfloat("Spectral line", "y_max"))
-    plotData(data, radial_velocities, "LINE_NAME", gal_coords, eq_coords, lsr_correction, formatted_time, y_limits)
+    plotData(data=data, obs_freq=obs_freqs, rest_freq=rest_freqs, time=formatted_time, plot_limits=y_limits)
 
     
     # Save data if wanted
