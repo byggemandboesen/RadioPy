@@ -107,19 +107,28 @@ def collectData(sdr: SDR, fft_num: int, n_bins: int) -> tuple:
     # Generate list with frequencies
     freqs = np.linspace(sdr.getFrequency()-sdr.getSampleRate()/2, sdr.getFrequency()+sdr.getSampleRate()/2, n_bins)
     tmp_bins = np.empty(n_bins, dtype = np.complex64)
-    data = np.empty(n_bins, dtype = np.float16)
+    data = np.zeros(n_bins, dtype = np.float16)
     sdr.startStream()
     try:
         for i in range(fft_num):
             tmp_bins = sdr.readFromStream()
-            data = np.add(data, DSP.doFFT(tmp_bins, n_bins))
-
-        data = np.divide(data, fft_num)
+            data = data+DSP.doFFT(bins = tmp_bins, n_bins = n_bins)
+            
+        data = data/fft_num
     except:
         print("Issue when reading bins... Please try again")
         quit()
+    
     sdr.stopStream()
 
-    # TODO - Maybe check for blank samples and interpolate these here?
+    # Replace bad samples lost from sample drops etc.
+    # TODO Fix scenario where dropped sample is either first or last
+    # This is especially an issue with HackRF at high sample rates
+    idx = np.where(data==-np.inf)
+    if np.size(idx) > 0:
+        for bad_sample in idx:
+            data[bad_sample] = (data[bad_sample-1]+data[bad_sample+1])/2
+        print("Bad samples replaced at:")
+        print(idx)
 
     return freqs, data

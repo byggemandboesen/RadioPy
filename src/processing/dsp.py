@@ -3,12 +3,12 @@ import numpy as np
 def doFFT(bins, n_bins: int):
     '''
     Perform FFT on the given bins
+    TODO - Consider keeping scale linear
     '''
     PSD = (np.abs(np.fft.fft(bins))/n_bins)**2
-    PSD = checkForZero(PSD)
     PSD_log = 10.0*np.log10(PSD)
-    fft_bins = np.fft.fftshift(PSD_log)
-    # fft_bins = np.fft.fftshift(PSD)
+    # fft_bins = np.fft.fftshift(PSD_log)
+    fft_bins = np.fft.fftshift(PSD)
     return fft_bins
 
 
@@ -21,8 +21,7 @@ def checkForZero(bins):
         return bins
     print('Dropped sample was recovered!')
     bins[index] = np.mean(bins[index+1]+bins[index-1])
-    # TODO Fix scenario where dropped sample is either first or last
-    # This is especially an issue with HackRF at high sample rates
+    
     return bins
 
 
