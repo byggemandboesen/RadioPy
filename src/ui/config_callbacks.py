@@ -140,8 +140,8 @@ def applyParameters():
     config.set("Spectral line", "fft_num", str(dpg.get_value("fft_num")))
     config.set("Spectral line", "smoothing", str(dpg.get_value("smoothing")))
     config.set("Spectral line", "redshift", str(dpg.get_value("redshift")))
-    config.set("Spectral line", "y_min", str(round(dpg.get_value("y_min"), 3)))
-    config.set("Spectral line", "y_max", str(round(dpg.get_value("y_max"), 3)))
+    config.set("Spectral line", "y_min", str(round(dpg.get_value("y_min"), 9)))
+    config.set("Spectral line", "y_max", str(round(dpg.get_value("y_max"), 9)))
     config.set("Spectral line", "save_data", str(dpg.get_value("save_data")))
 
     with open('config.ini', 'w') as configfile:

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
+import os
 
 def plotData(data: np.ndarray, obs_freq: np.ndarray, rest_freq: np.ndarray, time, plot_limits = (0,0)) -> None:
     '''
@@ -51,5 +52,7 @@ def plotData(data: np.ndarray, obs_freq: np.ndarray, rest_freq: np.ndarray, time
 
     # Save
     file_path = f"./observations/{time}.png"
+    if not os.path.isdir("observations/"):
+        os.system("mkdir observations")
     plt.savefig(file_path, dpi = 150)
     # plt.show()

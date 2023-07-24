@@ -45,8 +45,8 @@ def spectralLineTab():
                 dpg.add_text("(?)", color=(0,0,255,255), tag = "plot_limits_tooltip")
 
             with dpg.group(horizontal=True):
-                dpg.add_input_float(label="Y min", width = UI_CONSTS.W_NUM_INP_DOUB_COL, default_value=0, tag="y_min")
-                dpg.add_input_float(label="Y max", width = UI_CONSTS.W_NUM_INP_DOUB_COL, default_value=0, tag="y_max")
+                dpg.add_input_float(label="Y min", width = UI_CONSTS.W_NUM_INP_DOUB_COL, default_value=0, tag="y_min", format="%.7f")
+                dpg.add_input_float(label="Y max", width = UI_CONSTS.W_NUM_INP_DOUB_COL, default_value=0, tag="y_max", format="%.7f")
             
             with dpg.tooltip("plot_limits_tooltip"):
                 dpg.add_text("Y-axis plot limits. If left to 0,0 axis will be autoscaled")
