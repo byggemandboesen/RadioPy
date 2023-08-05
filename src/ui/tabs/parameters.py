@@ -10,7 +10,7 @@ import ui.config_callbacks as cb
 import ui.ui_constants as UI_CONSTS
 
 def parametersTab() -> None:
-    with dpg.tab(label= "General parameters"):
+    with dpg.tab(label= "General"):
         
         # Ground station
         with dpg.collapsing_header(label = "Ground station", default_open=True):

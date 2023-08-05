@@ -5,6 +5,7 @@ import dearpygui.dearpygui as dpg
 import ui.tabs.spectral_line_ui as LINE_UI
 import ui.tabs.parameters as PARAM_UI
 import ui.tabs.editor as EDITOR_UI
+import ui.tabs.analysis as ANALYSIS_UI
 import ui.tabs.info as INFO
 import ui.ui_constants as UI_CONSTS
 
@@ -21,11 +22,14 @@ def runUI():
                     # General parameters/options
                     PARAM_UI.parametersTab()
                     
-                    # Spectral line window
+                    # Spectral line
                     LINE_UI.spectralLineTab()
 
-                    # Editor
+                    # Editor (Consider merging editor with spectral line tab)
                     EDITOR_UI.editorTab()
+
+                    # Analysis
+                    ANALYSIS_UI.analysisTab()
 
                     # Info
                     INFO.infoTab()

@@ -27,3 +27,15 @@ def defaultTheme():
         
     return global_theme
 
+
+def fileBrowserCallback():
+    '''
+    Callback for file browser
+    '''
+    return
+
+def fileBrowserCancelled():
+    '''
+    Callback for cancelled file browsing
+    '''
+    return

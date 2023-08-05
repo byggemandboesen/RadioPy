@@ -101,7 +101,7 @@ def updateParameters():
     dpg.set_value("sample_rate", config.getint("SDR", "sample_rate"))
     dpg.set_value("ppm_offset", config.getint("SDR", "ppm_offset"))
     dpg.set_value("bins", config.getint("SDR", "bins"))
-    dpg.set_value("bins", config.getint("SDR", "frequency"))
+    dpg.set_value("frequency", config.getint("SDR", "frequency"))
 
     dpg.set_value("fft_num", config.getint("Spectral line", "fft_num"))
     dpg.set_value("smoothing", config.getint("Spectral line", "smoothing"))
