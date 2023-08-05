@@ -76,6 +76,7 @@ redshift = 0.0              # [float] Redshift of observed target
 y_min = 0.0                 # [float] y-axis minimum
 y_max = 0.0                 # [float] y-axis maximum
 save_data = True            # [bool]  Export observation data as csv file
+secax = velocity            # [str]   To display on second x-axis - either velocity or rest-frequency
 ```
 **Thorough description of config parameters coming soon**
 The frequency can be set from a certain number of spectral line presets:
@@ -89,9 +90,7 @@ This list will most likely also include more spectral lines in the future. <br>
 In the future, I hope to include a module for pulsar observation as well.
 
 # TODO
-* Consider writing txt with observation parameters and keep only data/velocities/freqs in CSV/FITS
-* Custom frequency input
+* Somehow save observation parameters for each observation
 * Spectral line data editor/viewer
-* Pulsar module
 * Improve README
-* Add FITS support
+* *Pulsar module*

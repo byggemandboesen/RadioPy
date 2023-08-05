@@ -50,9 +50,37 @@ def spectralLineTab():
             
             with dpg.tooltip("plot_limits_tooltip"):
                 dpg.add_text("Y-axis plot limits. If left to 0,0 axis will be autoscaled")
-            
+
+            dpg.add_text("Second x-axis:")
+            dpg.add_combo(["Velocity", "Rest-frequency"], default_value="Velocity", tag="secax", width=UI_CONSTS.W_NUM_INP_SING_COL)
 
             dpg.add_checkbox(label = "Save data", default_value=True, tag="save_data")
+
+
+        dpg.add_spacer(height=UI_CONSTS.H_COLL_HEAD_SPACER)
+        with dpg.collapsing_header(label = "Calibration", default_open=True):
+            with dpg.group(horizontal=True):
+                dpg.add_text("Calibrate bandpass of observation ")
+                dpg.add_text("(?)", color=(0,0,255,255), tag = "calibration_tooltip")
+            with dpg.tooltip("calibration_tooltip"):
+                dpg.add_text("Calibrate observation from 50Ohm terminated reference or frequency offset observation")
+            
+            dpg.add_text("Load primary observation file")
+            with dpg.group(horizontal=True):
+                dpg.add_input_text(hint = "Main file path", width = UI_CONSTS.W_TXT_INP, tag = "main_path", callback=updateDataViewer)
+                dpg.add_button(label = "Browse", callback=lambda: dpg.show_item("main_file_dialog"))
+            
+
+            dpg.add_text("Load calibration file")
+            with dpg.group(horizontal=True):
+                dpg.add_input_text(hint = "Calibration file", width = UI_CONSTS.W_TXT_INP, tag = "calibration_path", callback=updateDataViewer)
+                dpg.add_button(label = "Browse", callback=lambda: dpg.show_item("cal_file_dialog"))
+            
+            # File dialog
+            with dpg.file_dialog(label = "Browse", show = False, tag = "main_file_dialog", width=600, height=400, default_path=os.getcwd(), callback=fileDialogCallBack, cancel_callback=fileDialogCancelledCallBack, user_data="main"): # TODO - Update callback
+                dpg.add_file_extension(".csv", color=(0, 255, 0, 255))
+            with dpg.file_dialog(label = "Browse", show = False, tag = "cal_file_dialog", width=600, height=400, default_path=os.getcwd(), callback=fileDialogCallBack, cancel_callback=fileDialogCancelledCallBack, user_data="cal"): # TODO - Update callback
+                dpg.add_file_extension(".csv", color=(0, 255, 0, 255))
 
 
         # Run observation section
@@ -85,3 +113,27 @@ def beginObservation():
     '''
     CB.applyParameters()
     os.system('py radiopy.py -s' if os.name =='nt' else 'python3 radiopy.py -s')
+
+
+def fileDialogCallBack(sender: dict, app_data: str, user_data: str) -> None:
+    '''
+    Callback for calibration file dialog
+    '''
+    path = app_data["file_path_name"]
+    if user_data == "main":
+        dpg.set_value("main_path", path)
+    else:
+        dpg.set_value("calibration_path", path)
+
+def fileDialogCancelledCallBack() -> None:
+    '''
+    Callback for cancelled file browsing
+    '''
+    return
+
+
+def updateDataViewer() -> None:
+    '''
+    Update data viewer from the loaded files and calibration
+    '''
+    return

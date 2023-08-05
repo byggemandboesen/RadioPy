@@ -24,7 +24,8 @@ DEFAULT_PARAM = {
     "redshift": 0.0,
     "y_min": 0.0,
     "y_max": 0.0,
-    "save_data": True
+    "save_data": True,
+    "secax": "velocity"
 }
 
 
@@ -76,6 +77,7 @@ def applyDefaultParameters():
     dpg.set_value("y_min", DEFAULT_PARAM["y_min"])
     dpg.set_value("y_max", DEFAULT_PARAM["y_max"])
     dpg.set_value("save_data", DEFAULT_PARAM["save_data"])
+    dpg.set_value("secax", DEFAULT_PARAM["secax"])
 
 
 def updateParameters():
@@ -110,6 +112,7 @@ def updateParameters():
     dpg.set_value("y_min", config.getfloat("Spectral line", "y_min"))
     dpg.set_value("y_max", config.getfloat("Spectral line", "y_max"))
     dpg.set_value("save_data", config.getboolean("Spectral line", "save_data"))
+    dpg.set_value("secax", config.get("Spectral line", "secax"))
 
 
 def applyParameters():
@@ -143,6 +146,7 @@ def applyParameters():
     config.set("Spectral line", "y_min", str(round(dpg.get_value("y_min"), 9)))
     config.set("Spectral line", "y_max", str(round(dpg.get_value("y_max"), 9)))
     config.set("Spectral line", "save_data", str(dpg.get_value("save_data")))
+    config.set("Spectral line", "secax", str(dpg.get_value("secax")))
 
     with open('config.ini', 'w') as configfile:
         config.write(configfile)

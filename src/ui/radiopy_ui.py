@@ -26,7 +26,7 @@ def runUI():
                     LINE_UI.spectralLineTab()
 
                     # Editor (Consider merging editor with spectral line tab)
-                    EDITOR_UI.editorTab()
+                    # EDITOR_UI.editorTab()
 
                     # Analysis
                     ANALYSIS_UI.analysisTab()
