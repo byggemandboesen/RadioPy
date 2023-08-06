@@ -45,8 +45,8 @@ def spectralLineTab():
                 dpg.add_text("(?)", color=(0,0,255,255), tag = "plot_limits_tooltip")
 
             with dpg.group(horizontal=True):
-                dpg.add_input_float(label="Y min", width = UI_CONSTS.W_NUM_INP_DOUB_COL, default_value=0, tag="y_min", format="%.7f")
-                dpg.add_input_float(label="Y max", width = UI_CONSTS.W_NUM_INP_DOUB_COL, default_value=0, tag="y_max", format="%.7f")
+                dpg.add_input_float(label="MIN", width = UI_CONSTS.W_NUM_INP_DOUB_COL, default_value=0, tag="y_min", format="%.7f")
+                dpg.add_input_float(label="MAX", width = UI_CONSTS.W_NUM_INP_DOUB_COL, default_value=0, tag="y_max", format="%.7f")
             
             with dpg.tooltip("plot_limits_tooltip"):
                 dpg.add_text("Y-axis plot limits. If left to 0,0 axis will be autoscaled")
@@ -65,12 +65,12 @@ def spectralLineTab():
             with dpg.tooltip("calibration_tooltip"):
                 dpg.add_text("Calibrate observation from 50Ohm terminated reference or frequency offset observation")
             
+            
             dpg.add_text("Load primary observation file")
             with dpg.group(horizontal=True):
                 dpg.add_input_text(hint = "Main file path", width = UI_CONSTS.W_TXT_INP, tag = "main_path", callback=updateDataViewer)
                 dpg.add_button(label = "Browse", callback=lambda: dpg.show_item("main_file_dialog"))
             
-
             dpg.add_text("Load calibration file")
             with dpg.group(horizontal=True):
                 dpg.add_input_text(hint = "Calibration file", width = UI_CONSTS.W_TXT_INP, tag = "calibration_path", callback=updateDataViewer)
@@ -82,6 +82,18 @@ def spectralLineTab():
             with dpg.file_dialog(label = "Browse", show = False, tag = "cal_file_dialog", width=600, height=400, default_path=os.getcwd(), callback=fileDialogCallBack, cancel_callback=fileDialogCancelledCallBack, user_data="cal"): # TODO - Update callback
                 dpg.add_file_extension(".csv", color=(0, 255, 0, 255))
 
+            with dpg.tree_node(label="Configure calibration parameters", default_open=True):
+                with dpg.group(horizontal=True):
+                    dpg.add_input_float(label="Scaling ", width=UI_CONSTS.W_NUM_INP_SING_COL, default_value=1, tag="calibration_scaling_const")
+                    dpg.add_text("(?)", color=(0,0,255,255), tag = "calibration_scaling_tooltip")
+                with dpg.tooltip("calibration_scaling_tooltip"):
+                    dpg.add_text("Subtract calibration bandpass multiplied by scaling constant from observation data")
+                dpg.add_button(label="Autoscale")
+
+                dpg.add_spacer(height=2.5)
+                dpg.add_text("Line width and position")
+                dpg.add_input_int(label="Line position (bin)", default_value=0, width=UI_CONSTS.W_NUM_INP_SING_COL, tag="line_center")
+                dpg.add_input_int(label="Line width (bins)", default_value=200, width=UI_CONSTS.W_NUM_INP_SING_COL, tag="line_width")
 
         # Run observation section
         dpg.add_spacer(height=10)

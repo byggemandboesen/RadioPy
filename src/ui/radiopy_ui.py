@@ -6,7 +6,10 @@ import ui.tabs.spectral_line_ui as LINE_UI
 import ui.tabs.parameters as PARAM_UI
 import ui.tabs.editor as EDITOR_UI
 import ui.tabs.analysis as ANALYSIS_UI
+
 import ui.tabs.info as INFO
+import ui.dataviewer as DATAVIEWER
+
 import ui.ui_constants as UI_CONSTS
 
 # Run user interface
@@ -35,9 +38,7 @@ def runUI():
                     INFO.infoTab()
 
 
-            with dpg.child_window(width=-1):
-                dpg.add_text("Data viewer")
-                # TODO - Antialiazed lines
+            DATAVIEWER.dataViewerWindow()
 
     
     # Apply theme

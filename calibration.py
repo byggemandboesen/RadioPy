@@ -11,8 +11,8 @@ args = parser.parse_args()
 sensitivity = args.sensitivity
 line_width = args.line_width
 
-file = "observations/1420405752_24_07_2023_19_14_38.csv" # 19_12_21.csv" # 19_23_28.csv" # 19_22_07.csv" # 18_53_18.csv" # 18_58_28.csv
-cal_file = "observations/1420405752_24_07_2023_19_43_01.csv" # 19_41_40.csv" # 19_26_04.csv" # 19_27_12.csv" # 19_32_51.csv" # 19_31_09.csv
+file = "observations/1420405752_24_07_2023_18_58_28.csv" # 19_23_28.csv" # 19_12_21.csv" # 19_14_38.csv"  # 19_22_07.csv" # 18_53_18.csv"
+cal_file = "observations/1420405752_24_07_2023_19_31_09.csv" # 19_26_04.csv" # 19_41_40.csv" # 19_43_01.csv"  # 19_27_12.csv" # 19_32_51.csv"
 
 data_df = pd.read_csv(file)
 cal_df = pd.read_csv(cal_file)
@@ -40,6 +40,7 @@ print(k_min)
 fig, ax = plt.subplots(1,3, figsize=(12,6), sharex=True, sharey=True)
 ax[0].step(freqs, data)
 ax[1].step(freqs, cal_data)
+# ax[2].plot(freqs, np.correlate(data, cal_data, "same"))
 ax[2].step(freqs, data-(k_min*cal_data))
 
 plt.tight_layout()
