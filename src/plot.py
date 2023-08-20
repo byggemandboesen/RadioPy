@@ -3,7 +3,7 @@ from matplotlib import colors
 import numpy as np
 import os
 
-def plotData(data: np.ndarray, obs_freq: np.ndarray, rest_freq: np.ndarray, time, plot_limits = (0,0)) -> None:
+def plotData(data: np.ndarray, obs_freq: np.ndarray, radial_vel: np.ndarray, time, plot_limits = (0,0)) -> None:
     '''
     Plot the data from an observation
 
@@ -11,7 +11,7 @@ def plotData(data: np.ndarray, obs_freq: np.ndarray, rest_freq: np.ndarray, time
 
     obs_freq    - observer frame frequencies
 
-    rest_freq   - rest frame frequencies
+    radial_vel  - Radial velocities wrt. rest frequency
 
     time        - datetime of time of observation
 
@@ -30,9 +30,9 @@ def plotData(data: np.ndarray, obs_freq: np.ndarray, rest_freq: np.ndarray, time
     # Plot spectrum and format ax
     ax.step(obs_freq, data, color = "b", linewidth = 0.75, label = "Observed data")
     ax.set(xlim=(obs_freq[0], obs_freq[-1]))
-    secax.set(xlim=(rest_freq[0], rest_freq[-1]))
+    secax.set(xlim=(radial_vel[0], radial_vel[-1]))
     ax.set_xlabel(r"Observer frame frequency [$Hz$]", fontsize = FS_label)
-    secax.set_xlabel(r"Rest frame frequency [$Hz$]", fontsize = FS_label)
+    secax.set_xlabel(r"Radial velocity [$Km/s$]", fontsize = FS_label)
 
     
     if plot_limits != (0,0):

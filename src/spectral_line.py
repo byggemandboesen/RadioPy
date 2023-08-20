@@ -44,8 +44,8 @@ def runObservation():
     center_freq = config.getint("SDR", "frequency")
     
     fft_num = config.getint("Spectral line", "fft_num")
-    redshift = config.getfloat("Spectral line", "redshift")
     smoothing = config.getint("Spectral line", "smoothing")
+    restfreq = center_freq if config.getfloat("Spectral line", "restfreq") == 0.0 else config.getfloat("Spectral line", "restfreq")*10**6
 
     # Determine tuning frequency
     sdr_freq = center_freq - LO_freq
@@ -54,7 +54,6 @@ def runObservation():
     
     # Collect data
     obs_freqs, data = collectData(sdr = sdr, fft_num = fft_num, n_bins = n_bins)
-    rest_freqs = GS.observerFreqToRest(freqs=obs_freqs, redshift=redshift)
     if smoothing > 0:
         data = DSP.applySmoothing(bins = data, num = smoothing)
 
@@ -65,11 +64,11 @@ def runObservation():
 
     # Calculate radial velocities and correct for LSR if desired
     lsr_correction = GS.getLSRCorrection(ra = eq_coords[0], dec = eq_coords[1]) if lsr_correct else 0
-    radial_velocities = np.subtract([GS.freqToVel(rest_freq = center_freq, freq = freq) for freq in rest_freqs], lsr_correction)
+    radial_velocities = np.subtract([GS.freqToVel(rest_freq = restfreq, freq = freq) for freq in obs_freqs], lsr_correction)
 
     # Finally, plot the data
     y_limits = (config.getfloat("Spectral line", "y_min"), config.getfloat("Spectral line", "y_max"))
-    plotData(data=data, obs_freq=obs_freqs, rest_freq=rest_freqs, time=formatted_time, plot_limits=y_limits)
+    plotData(data=data, obs_freq=obs_freqs, time=formatted_time, plot_limits=y_limits)
 
     
     # Save data if wanted
@@ -82,8 +81,7 @@ def runObservation():
 
         df_data = {
             "Data": data,
-            "Observer frame frequencies": obs_freqs,
-            "Rest frame frequencies": rest_freqs,
+            "Observer frame frequency": obs_freqs,
             "Radial velocity": radial_velocities,
             "Eq_coords": eq_coords,
             "Gal_coords": gal_coords,

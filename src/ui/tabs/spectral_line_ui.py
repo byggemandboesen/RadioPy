@@ -20,11 +20,11 @@ def spectralLineTab():
             #     dpg.add_text("Offset center frequency to avoid DC spike overlap")
 
             with dpg.group(horizontal=True):
-                dpg.add_input_float(label="Redshift", default_value=0, min_value=0, min_clamped=True, max_clamped=True, width=UI_CONSTS.W_NUM_INP_SING_COL, tag="redshift")
-                dpg.add_text("(?)", color=(0,0,255,255), tag = "redshift_tooltip")
+                dpg.add_input_float(label="Rest freq (MHz)", default_value=0, min_value=0, min_clamped=True, width=UI_CONSTS.W_NUM_INP_SING_COL, tag="restfreq")
+                dpg.add_text("(?)", color=(0,0,255,255), tag = "restfreq_tooltip")
 
-            with dpg.tooltip("redshift_tooltip"):
-                dpg.add_text("Account for target redshift")
+            with dpg.tooltip("restfreq_tooltip"):
+                dpg.add_text("Rest frequency to determine radial velocites from.\nIf left at 0, default will be SDR center frequency")
             
             with dpg.group(horizontal=True):
                 dpg.add_checkbox(label = "Correct for LSR", tag="lsr_correct", default_value=True)
@@ -51,8 +51,8 @@ def spectralLineTab():
             with dpg.tooltip("plot_limits_tooltip"):
                 dpg.add_text("Y-axis plot limits. If left to 0,0 axis will be autoscaled")
 
-            dpg.add_text("Second x-axis:")
-            dpg.add_combo(["Velocity", "Rest-frequency"], default_value="Velocity", tag="secax", width=UI_CONSTS.W_NUM_INP_SING_COL)
+            # dpg.add_text("Second x-axis:")
+            # dpg.add_combo(["Velocity", "Rest-frequency"], default_value="Velocity", tag="secax", width=UI_CONSTS.W_NUM_INP_SING_COL)
 
             dpg.add_checkbox(label = "Save data", default_value=True, tag="save_data")
 
@@ -63,7 +63,7 @@ def spectralLineTab():
                 dpg.add_text("Calibrate bandpass of observation ")
                 dpg.add_text("(?)", color=(0,0,255,255), tag = "calibration_tooltip")
             with dpg.tooltip("calibration_tooltip"):
-                dpg.add_text("Calibrate observation from 50Ohm terminated reference or frequency offset observation")
+                dpg.add_text("Calibrate observation from reference observation (cold sky for example)")
             
             
             dpg.add_text("Load primary observation file")
