@@ -80,7 +80,6 @@ restfreq = 0.0              # [float] Rest frequency of desired line feature
 y_min = 0.0                 # [float] y-axis minimum
 y_max = 0.0                 # [float] y-axis maximum
 save_data = True            # [bool]  Export observation data as csv file
-secax = velocity            # [str]   To display on second x-axis - either velocity or rest-frequency
 ```
 **Thorough description of config parameters coming soon**
 The frequency can be set from a certain number of spectral line presets:
