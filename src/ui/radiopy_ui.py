@@ -15,9 +15,9 @@ import ui.ui_constants as UI_CONSTS
 # Run user interface
 def runUI():
     dpg.create_context()
-    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1225, height=700)
+    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1400, height=800)
     
-    with dpg.window(label="Main window", pos=[10,10], width=1200, height=675, no_title_bar=True):
+    with dpg.window(label="Main window", no_title_bar=True) as main_window:
 
         with dpg.group(horizontal=True):
             with dpg.child_window(width=400):
@@ -45,7 +45,8 @@ def runUI():
     theme = UI_CONSTS.defaultTheme()
     dpg.bind_theme(theme)
 
-    
+    dpg.set_primary_window(main_window, True)
+
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()

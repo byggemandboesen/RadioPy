@@ -4,7 +4,7 @@ from SoapySDR import *
 import numpy as np
 
 
-def listDrivers():
+def listDrivers() -> list:
     '''
     Retreive the available Soapy drivers.
 
@@ -38,7 +38,7 @@ class SDR:
 
     # ------------------------------ Properties ------------------------------ #
 
-    def getAvailableFreqencyRange(self):
+    def getAvailableFreqencyRange(self) -> list:
         '''
         Get the tunable frequency range for the current SDR
 
@@ -47,7 +47,7 @@ class SDR:
         range = self.sdr.getFrequencyRange(SOAPY_SDR_RX, 0)[0]
         return [range.minimum(), range.maximum()]
     
-    def getAvailableSampleRates(self):
+    def getAvailableSampleRates(self) -> list:
         '''
         Get the tunable sample rates for the current SDR
 
@@ -56,7 +56,7 @@ class SDR:
         range = self.sdr.listSampleRates(SOAPY_SDR_RX, 0)
         return list(int(sample_rate) for sample_rate in range)
     
-    def getTunableElements(self):
+    def getTunableElements(self) -> list:
         '''
         Get the tunable elements (RF and sometimes PPM correction)
         
@@ -66,7 +66,7 @@ class SDR:
         return list(elem)
 
 
-    def setFrequency(self, frequency: int):
+    def setFrequency(self, frequency: int) -> None:
         '''
         Set the center frequency to a given frequency
         '''
@@ -77,14 +77,14 @@ class SDR:
             print("Frequency is outside the range of this device!!")
             quit()
 
-    def getFrequency(self):
+    def getFrequency(self) -> int:
         '''
         Return the current center frequency
         '''
         return self.sdr.getFrequency(SOAPY_SDR_RX, 0)
 
 
-    def setSampleRate(self, sample_rate: int):
+    def setSampleRate(self, sample_rate: int) -> None:
         '''
         Set the sample rate to a given sample rate
         '''
@@ -94,14 +94,14 @@ class SDR:
             print("Device does not support the selected sample rate!!")
             quit()
 
-    def getSampleRate(self):
+    def getSampleRate(self) -> int:
         '''
         Return the current sample rate
         '''
         return self.sdr.getSampleRate(SOAPY_SDR_RX, 0)
 
     
-    def setBins(self, bins: int):
+    def setBins(self, bins: int) -> None:
         '''
         Set the number of bins collected to the buffer wehn streaming
         '''
@@ -113,14 +113,14 @@ class SDR:
             print("Invalid number of bins. Must be positive and follow exponential with base 2 and an integer power!!")
             quit()
 
-    def getBins(self):
+    def getBins(self) -> int:
         '''
         Return the current number of bins collected when reading from stream
         '''
         return self.bins
 
 
-    def setPPMOffset(self, offset: int):
+    def setPPMOffset(self, offset: int) -> None:
         '''
         Set the PPM offset for the SDR
         '''
@@ -132,7 +132,7 @@ class SDR:
         else:
             print("PPM offset not availabe for this device... skipping...")
     
-    def getPPMOffset(self):
+    def getPPMOffset(self) -> int:
         '''
         Return the current PPM offset
         '''
@@ -140,14 +140,14 @@ class SDR:
 
     # ------------------------------- Streaming ------------------------------ #
 
-    def startStream(self):
+    def startStream(self) -> None:
         '''
         Start a stream from device
         '''
         self.rxStream = self.sdr.setupStream(SOAPY_SDR_RX, SOAPY_SDR_CF32)
         self.sdr.activateStream(self.rxStream)
 
-    def readFromStream(self):
+    def readFromStream(self) -> np.ndarray:
         '''
         Read bins into buffer
         '''
@@ -158,10 +158,11 @@ class SDR:
         sr = self.sdr.readStream(self.rxStream, [self.buffer], self.bins)
         if sr.ret < self.bins:
             print(f"Error when reading samples... Received {sr.ret}, but expected {self.bins}")
+            self.stopStream()
             quit()
         return self.buffer
 
-    def stopStream(self):
+    def stopStream(self) -> None:
         '''
         Stop the stream from device
         '''
