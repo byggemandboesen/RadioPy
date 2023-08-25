@@ -92,6 +92,21 @@ def runObservation():
         df = pd.DataFrame(df_data)
         df.to_csv(f"{file_name}.csv", index = False)
 
+        with open(file_name, "w") as obs_file:
+            obs_data = [
+                f"Observation time,{current_time}\n",
+                f"Local coordinates,{az},{alt}\n",
+                f"Equatorial coordinates,{eq_coords[0]},{eq_coords[1]}\n",
+                f"Galactic coordinates,{gal_coords[0]},{gal_coords[1]}\n",
+                f"LSR correction,{-lsr_correction}\n",
+                "Data,Observer frequency,Radial velocity\n"
+            ]
+            obs_file.writelines(obs_data)
+
+            for i in range(len(data)):
+                obs_file.write(f"{data[i]},{obs_freqs[i]},{radial_velocities[i]}\n")
+        obs_file.close()
+
 
 def collectData(sdr: SDR, fft_num: int, n_bins: int) -> tuple:
     '''

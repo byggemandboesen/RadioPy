@@ -55,6 +55,9 @@ def spectralLineTab():
             # dpg.add_combo(["Velocity", "Rest-frequency"], default_value="Velocity", tag="secax", width=UI_CONSTS.W_NUM_INP_SING_COL)
 
             dpg.add_checkbox(label = "Save data", default_value=True, tag="save_data")
+            dpg.add_checkbox(label="Calibrate observation from file", tag="auto_calibrate_observation")
+            dpg.add_combo(items=["Calibration from settings", "Autocalibrate"], default_value="Autocalibrate", tag="calibration_method", width=UI_CONSTS.W_NUM_INP_SING_COL)
+            
 
 
         dpg.add_spacer(height=UI_CONSTS.H_COLL_HEAD_SPACER)
