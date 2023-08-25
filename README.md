@@ -30,13 +30,13 @@ The primary goal for RaioPy is to act as a simple, yet useful, tool for radioast
 | Device                  | Tested             | Buggy | Remarks                                                                                                                              |
 |-------------------------|--------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------|
 | RTL-SDR V3              | :white_check_mark: | No    | None                                                                                                                                 |
-| RTL-SDR V4              | :cross_mark:       |       |                                                                                                                                      |
-| Nooelec NESDR SMArt v5  | :cross_mark:       |       |                                                                                                                                      |
+| RTL-SDR V4              | ⛔       |       |                                                                                                                                      |
+| Nooelec NESDR SMArt v5  | ⛔       |       |                                                                                                                                      |
 | Nooelec NESDR SMArt XTR | :white_check_mark: | Yes   | Some sample rates are not usable (usually low sample rates)                                                                          |
 | Airspy mini             | :white_check_mark: | No    | During testing, it has been experienced that the Airspy mini easily disconnects from the PC if not secured properly in the USB port. |
-| Airspy R2               | :cross_mark:       |       |                                                                                                                                      |
+| Airspy R2               | ⛔       |       |                                                                                                                                      |
 | HackRF                  | :white_check_mark: | Yes   | It seems that the highest achievable sample rate greatly depends on the USB port/PC you're using the device with                     |
-| Blade RF                | :cross_mark:       |       |                                                                                                                                      |
+| Blade RF                | ⛔       |       |                                                                                                                                      |
 
 
 This list will likely grow as users report their experience with different devices!<br>
