@@ -27,12 +27,16 @@ Since RadioPy uses python bindings it should be cross platform, however, it may 
 The primary goal for RaioPy is to act as a simple, yet useful, tool for radioastronomy. This means it offers a way to perform observations of different radioastronomical spectral lines with numerous different SDR's.
 
 ### Tested devices
-|             |       Tested       | Buggy |                                                                                                                           Remarks                                                                                                                          |
-|:-----------:|:------------------:|:-----:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|  RTL-SDR V3 | :white_check_mark: |   No  |                                                                                                                             None                                                                                                                           |
-| Nooelec XTR | :white_check_mark: |   No  |                                                                                          Due to the E4000 tuner one might benifit from using the DC offset feature                                                                                         |
-| Airspy mini | :white_check_mark: |  Yes  |                                                                                                          On some PC's you may counter a driver error                                                                                                       |
-|    HackRF   | :white_check_mark: |  Yes  | - It seems that the highest achievable sample rate greatly depends on the USB port/PC you're using the device with <br> - I've experienced that the HackRF sometimes delivers garbage samples. Disconnecting and reconnecting the device fixes the problem |
+| Device                  | Tested             | Buggy | Remarks                                                                                                                              |
+|-------------------------|--------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------|
+| RTL-SDR V3              | :white_check_mark: | No    | None                                                                                                                                 |
+| RTL-SDR V4              | :cross_mark:       |       |                                                                                                                                      |
+| Nooelec NESDR SMArt v5  | :cross_mark:       |       |                                                                                                                                      |
+| Nooelec NESDR SMArt XTR | :white_check_mark: | Yes   | Some sample rates are not usable (usually low sample rates)                                                                          |
+| Airspy mini             | :white_check_mark: | No    | During testing, it has been experienced that the Airspy mini easily disconnects from the PC if not secured properly in the USB port. |
+| Airspy R2               | :cross_mark:       |       |                                                                                                                                      |
+| HackRF                  | :white_check_mark: | Yes   | It seems that the highest achievable sample rate greatly depends on the USB port/PC you're using the device with                     |
+| Blade RF                | :cross_mark:       |       |                                                                                                                                      |
 
 
 This list will likely grow as users report their experience with different devices!<br>
@@ -72,7 +76,7 @@ frequency = 1420405752      # [int]   Center frequency
 [Spectral line] 
 fft_num = 1000              # [float] Number of FFTs to average
 median = 0                  # [float] Bins to include in median smoothing
-redshift = 0.0              # [float] Redshift of observed target
+restfreq = 0.0              # [float] Rest frequency of desired line feature
 y_min = 0.0                 # [float] y-axis minimum
 y_max = 0.0                 # [float] y-axis maximum
 save_data = True            # [bool]  Export observation data as csv file
