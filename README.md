@@ -27,16 +27,16 @@ Since RadioPy uses python bindings it should be cross platform, however, it may 
 The primary goal for RaioPy is to act as a simple, yet useful, tool for radioastronomy. This means it offers a way to perform observations of different radioastronomical spectral lines with numerous different SDR's.
 
 ### Tested devices
-| Device                  | Tested             | Buggy | Remarks                                                                                                                              |
-|-------------------------|--------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------|
-| RTL-SDR V3              | :white_check_mark: | No    | None                                                                                                                                 |
-| RTL-SDR V4              | ⛔       |       |                                                                                                                                      |
-| Nooelec NESDR SMArt v5  | ⛔       |       |                                                                                                                                      |
-| Nooelec NESDR SMArt XTR | :white_check_mark: | Yes   | Some sample rates are not usable (usually low sample rates)                                                                          |
-| Airspy mini             | :white_check_mark: | No    | During testing, it has been experienced that the Airspy mini easily disconnects from the PC if not secured properly in the USB port. |
-| Airspy R2               | ⛔       |       |                                                                                                                                      |
-| HackRF                  | :white_check_mark: | Yes   | It seems that the highest achievable sample rate greatly depends on the USB port/PC you're using the device with                     |
-| Blade RF                | ⛔       |       |                                                                                                                                      |
+| Device                  | Tested | Buggy | Remarks                                                                                                                              |
+|-------------------------|--------|-------|--------------------------------------------------------------------------------------------------------------------------------------|
+| RTL-SDR V3              | ✅      | No    | None                                                                                                                                 |
+| RTL-SDR V4              | ⛔      |       |                                                                                                                                      |
+| Nooelec NESDR SMArt v5  | ⛔      |       |                                                                                                                                      |
+| Nooelec NESDR SMArt XTR | ✅      | Yes   | Some sample rates are not usable (usually low sample rates)                                                                          |
+| Airspy mini             | ✅      | No    | During testing, it has been experienced that the Airspy mini easily disconnects from the PC if not secured properly in the USB port. |
+| Airspy R2               | ⛔      |       |                                                                                                                                      |
+| HackRF                  | ✅      | Yes   | It seems that the highest achievable sample rate greatly depends on the USB port/PC you're using the device with                     |
+| Blade RF                | ⛔      |       |                                                                                                                                      |
 
 
 This list will likely grow as users report their experience with different devices!<br>
