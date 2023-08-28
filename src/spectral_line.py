@@ -6,6 +6,7 @@ import ui.config_callbacks as CB
 from processing.ground_station import Antenna, GroundStation
 from processing.soapy import SDR
 import processing.dsp as DSP
+from processing.observation import Observation
 from plot import plotData
 
 def runObservation():
@@ -57,6 +58,12 @@ def runObservation():
     if smoothing > 0:
         data = DSP.applySmoothing(bins = data, num = smoothing)
 
+    autocal = config.getboolean("Spectral line", "autocal")
+    if autocal:
+        cal_method = config.getboolean("Spectral line", "cal_method")
+
+        # TODO - Get cal file path, init Observation, retrieve data axis and perform cal
+        
 
     # Get antenna sky coordinates
     eq_coords = ANTENNA.getEquatorialCoordinates(GS)
@@ -74,38 +81,18 @@ def runObservation():
     # Save data if wanted
     # TODO - Find out way to store collection parameters maybe
     if config.getboolean("Spectral line", "save_data"):
-        file_name = f"observations/{center_freq}_{formatted_time}"
-
-        # Thanks to this fix
-        # https://python.plainenglish.io/a-quick-trick-to-make-dataframes-with-uneven-array-lengths-32bf80d8a61d
-
-        df_data = {
-            "Data": data,
-            "Observer frame frequency": obs_freqs,
-            "Radial velocity": radial_velocities,
-            "Eq_coords": eq_coords,
-            "Gal_coords": gal_coords,
-            "Observation_time": current_time,
-            "LSR_correction": -lsr_correction
-        }
-        df_data = dict([(k,pd.Series(v)) for k, v in df_data.items()])
-        df = pd.DataFrame(df_data)
-        df.to_csv(f"{file_name}.csv", index = False)
-
-        with open(file_name, "w") as obs_file:
-            obs_data = [
-                f"Observation time,{current_time}\n",
-                f"Local coordinates,{az},{alt}\n",
-                f"Equatorial coordinates,{eq_coords[0]},{eq_coords[1]}\n",
-                f"Galactic coordinates,{gal_coords[0]},{gal_coords[1]}\n",
-                f"LSR correction,{-lsr_correction}\n",
-                "Data,Observer frequency,Radial velocity\n"
-            ]
-            obs_file.writelines(obs_data)
-
-            for i in range(len(data)):
-                obs_file.write(f"{data[i]},{obs_freqs[i]},{radial_velocities[i]}\n")
-        obs_file.close()
+        obs_data = [
+            f"Observation time: {current_time}\n",
+            f"Local coordinates: {az},{alt}\n",
+            f"Equatorial coordinates: {eq_coords[0]},{eq_coords[1]}\n",
+            f"Galactic coordinates: {gal_coords[0]},{gal_coords[1]}\n",
+            f"LSR correction: {-lsr_correction}\n",
+            "Data,Observer frequency,Radial velocity\n"
+        ]
+        
+        file_name = f"observations/{center_freq}_{formatted_time}.txt"
+        obs = Observation(file_name)
+        obs.writeObservationFile(obs_data=obs_data, data = data, obs_freqs=obs_freqs, radial_vel=radial_velocities)
 
 
 def collectData(sdr: SDR, fft_num: int, n_bins: int) -> tuple:

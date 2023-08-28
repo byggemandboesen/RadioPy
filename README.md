@@ -80,6 +80,8 @@ restfreq = 0.0              # [float] Rest frequency of desired line feature
 y_min = 0.0                 # [float] y-axis minimum
 y_max = 0.0                 # [float] y-axis maximum
 save_data = True            # [bool]  Export observation data as csv file
+autocal = False             # [bool]  Calibrate observation during collection
+cal_method = Autocalibrate  # [str]   Method of calibration
 ```
 **Thorough description of config parameters coming soon**
 The frequency can be set from a certain number of spectral line presets:

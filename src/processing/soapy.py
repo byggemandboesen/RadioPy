@@ -159,8 +159,8 @@ class SDR:
         if sr.ret < self.bins:
             print(f"Error when reading samples... Received {sr.ret}, but expected {self.bins}")
             self.stopStream()
-            # TODO - Fix program hanging if this exception occurs
-            quit()
+            return
+
         return self.buffer
 
     def stopStream(self) -> None:
