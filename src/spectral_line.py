@@ -3,10 +3,10 @@ import pandas as pd
 import numpy as np
 
 import ui.config_callbacks as CB
-from processing.ground_station import Antenna, GroundStation
-from processing.soapy import SDR
-import processing.dsp as DSP
-from processing.observation import Observation
+from core.ground_station import Antenna, GroundStation
+from core.soapy import SDR
+import core.dsp as DSP
+from core.observation import Observation
 from plot import plotData
 
 def runObservation():
@@ -123,11 +123,13 @@ def collectData(sdr: SDR, fft_num: int, n_bins: int) -> tuple:
 
     # Replace bad samples lost from sample drops etc.
     # TODO Fix scenario where dropped sample is either first or last
+    # TODO - Test new fix
     # This is especially an issue with HackRF at high sample rates
     idx = np.where(data==-np.inf)
     if np.size(idx) > 0:
-        for bad_sample in idx:
-            data[bad_sample] = (data[bad_sample-1]+data[bad_sample+1])/2
+        data[idx] = np.interp(freqs[idx], freqs, data)
+        # for bad_sample in idx:
+        #     data[bad_sample] = (data[bad_sample-1]+data[bad_sample+1])/2
         print("Bad samples replaced at:")
         print(idx)
 

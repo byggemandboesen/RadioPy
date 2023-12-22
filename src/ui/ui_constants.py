@@ -28,11 +28,11 @@ def defaultTheme():
     return global_theme
 
 
-def fileBrowserCallback():
+def fileBrowserCallback(sender: dict, app_data: str, user_data: str) -> str:
     '''
     Callback for file browser
     '''
-    return
+    return app_data["file_path_name"]
 
 def fileBrowserCancelled():
     '''

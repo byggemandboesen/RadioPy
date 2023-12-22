@@ -33,7 +33,8 @@ class SDR:
         self.setPPMOffset(ppm_offset)
         
         # Initialize variables for later use
-        self.buffer = np.array([0]*bins, np.complex64)
+        self.buffer = np.zeros(bins, dtype=np.complex64)
+        # self.buffer = np.array([0]*bins, np.complex64)
         self.rxStream = None
 
     # ------------------------------ Properties ------------------------------ #

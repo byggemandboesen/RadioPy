@@ -1,8 +1,8 @@
 import dearpygui.dearpygui as dpg
 
 # Handle devices
-import processing.soapy as soapy
-from processing.soapy import SDR
+import core.soapy as soapy
+from core.soapy import SDR
 
 # Update spectral line observation time estimate
 from ui.tabs.spectral_line_ui import updateTimeEstimate
