@@ -42,7 +42,7 @@ class Observation:
         '''
 
         txt_file = open(self.PATH, 'r').readlines()
-        obs_time = str(txt_file[0][18:])
+        obs_time = str(txt_file[0][18:-1]) # Strip newline char
         obs_coord_azel = np.array(txt_file[1].split(": ")[1].split(","), dtype=float)
         obs_coord_eq = np.array(txt_file[2].split(": ")[1].split(","), dtype=float)
         obs_coord_gal = np.array(txt_file[3].split(": ")[1].split(","), dtype=float)

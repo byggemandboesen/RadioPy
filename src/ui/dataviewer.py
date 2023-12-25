@@ -18,10 +18,10 @@ def dataViewerWindow():
             dpg.add_line_series(np.linspace(0, 1, 100), np.zeros(100), label="Data", parent="y_axis", tag="spectrum_line_series")
 
 
-def updateLineSeries(xdata: np.ndarray, ydata: np.ndarray) -> None:
+def updateLineSeries(xdata: np.ndarray, ydata: np.ndarray, vel: np.ndarray) -> None:
     '''
     Update currently displayed line series
     '''
-    dpg.set_value("spectrum_line_series", [xdata, ydata])
+    dpg.set_value("spectrum_line_series", [xdata, ydata, vel])
     dpg.fit_axis_data('x_axis')
     dpg.fit_axis_data('y_axis')

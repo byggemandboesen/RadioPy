@@ -1,5 +1,6 @@
 import dearpygui.dearpygui as dpg
 import pandas as pd
+import numpy as np
 import os
 
 import ui.ui_constants as UI_CONSTS
@@ -106,19 +107,40 @@ def updateObservation() -> None:
     
     # Update table with observation information
     for i, k in enumerate(obs_kw_names):
-        dpg.set_value(row_names[i]+"_value", str(data[k]))
+        if type(data[k]) == np.ndarray:
+            dat = f"{data[k][0]}, {data[k][1]}"
+        else:
+            dat = str(data[k])
+        dpg.set_value(row_names[i]+"_value", dat)
     
     
-    freq, intensity = data["freq"], data["data"]
+    freq, intensity, vel = data["freq"], data["data"], data["radial_vel"]
     intensity = DSP.applySmoothing(intensity, int(dpg.get_value("editing_smoothing")))
 
-
-    # TODO Perform editing to data before updating line series:
-    updateLineSeries(freq, intensity)
+    # Finally, update line series
+    updateLineSeries(freq, intensity, vel)
 
 
 def saveToFile() -> None:
     '''
     Save edited data to new file
     '''
-    return
+
+    xdata, ydata, vel = dpg.get_value("spectrum_line_series")[:3]
+    obs_data = []
+
+    for i in range(len(row_names)):
+        name = row_names[i]
+
+        # Some formatting...
+        if ", " in dpg.get_value(name+"_value"):
+            dat = dpg.get_value(name+"_value").split(", ")
+            dat = f"{dat[0]}, {dat[1]}"
+        else:
+            dat = dpg.get_value(name+"_value")
+        obs_data.append(f"{name}: {dat}\n")
+    obs_data.append("Data,Observer frequency,Radial velocity\n")
+
+    file_name = dpg.get_value("analysis_file_path")[:-4]+"_EDITED.txt"
+    new_obs = Observation(file_name)
+    new_obs.writeObservationFile(obs_data=obs_data, data=ydata, obs_freqs=xdata, radial_vel=vel)
