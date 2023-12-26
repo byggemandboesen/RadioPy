@@ -98,4 +98,5 @@ In the future, I hope to include a module for pulsar observation as well.
 * Somehow save observation parameters for each observation
 * Spectral line data editor/viewer
 * Improve README
+* Add calibration from frequency offset observation or from observation file
 * *Pulsar module*

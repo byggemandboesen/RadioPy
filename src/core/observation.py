@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 
 
@@ -5,11 +6,32 @@ class Observation:
     '''
     Write, read or manipulate observation files
     '''
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, obs_time: str = "", local_coord: np.ndarray = np.zeros(2),
+                eq_coord: np.ndarray = np.zeros(2), gal_coord: np.ndarray = np.zeros(2),
+                lsr_corr: float = 0.0, freqs: np.ndarray = np.zeros(1024),
+                radial_vel: np.ndarray = np.zeros(1024), data: np.ndarray = np.zeros(1024)) -> None:
+        
         self.PATH = path
+        self.OBS_TIME = obs_time
+        self.LOCAL_COORD = local_coord
+        self.EQ_COORD = eq_coord
+        self.GAL_COORD = gal_coord
+        self.LSR_CORR = lsr_corr
+        self.FREQS = freqs
+        self.RADIAL_VEL = radial_vel
+        self.DATA = data
+
+    def __sub__(self, other: Observation) -> Observation:
+        '''
+        Subtract observation data from each other
+
+        If doing x-y, then subtract y-data from x, and keep info from x.
+        '''
+        other_data = other.readObservationFile()
+        self.DATA -= other_data["data"]
 
     
-    def writeObservationFile(self, obs_data: list, data: np.ndarray, obs_freqs: np.ndarray, radial_vel: np.ndarray) -> None:
+    def writeObservationFile(self) -> None:
         '''
         Write observation file from data
 
@@ -18,12 +40,19 @@ class Observation:
         obs_freqs       -   Numpy array of observation frequencies
         radial_vel      -   Numpy array of radial velocities
         '''
-
+        obs_data = [
+            f"Observation time: {self.OBS_TIME}\n",
+            f"Local coordinates: {self.LOCAL_COORD[0]},{self.LOCAL_COORD[1]}\n",
+            f"Equatorial coordinates: {self.EQ_COORD[0]},{self.EQ_COORD[1]}\n",
+            f"Galactic coordinates: {self.GAL_COORD[0]},{self.GAL_COORD[1]}\n",
+            f"LSR correction: {self.LSR_CORR}\n",
+            "Data,Observer frequency,Radial velocity\n"
+        ]
         with open(self.PATH, "w") as obs_file:
             obs_file.writelines(obs_data)
 
-            for i in range(len(data)):
-                obs_file.write(f"{data[i]},{obs_freqs[i]},{radial_vel[i]}\n")
+            for i in range(len(self.DATA)):
+                obs_file.write(f"{self.DATA[i]},{self.FREQS[i]},{self.RADIAL_VEL[i]}\n")
         obs_file.close()
 
 

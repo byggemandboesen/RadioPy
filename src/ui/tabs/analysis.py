@@ -126,21 +126,18 @@ def saveToFile() -> None:
     Save edited data to new file
     '''
 
+    # Get current edited data and write to new observation file
     xdata, ydata, vel = dpg.get_value("spectrum_line_series")[:3]
-    obs_data = []
+    obs_time = dpg.get_value(row_names[0]+"_value")
+    obs_coord_azel = np.array(dpg.get_value(row_names[1]+"_value").split(", "), dtype=float)
+    obs_coord_eq = np.array(dpg.get_value(row_names[2]+"_value").split(", "), dtype=float)
+    obs_coord_gal = np.array(dpg.get_value(row_names[3]+"_value").split(", "), dtype=float)
+    lsr_cor = float(dpg.get_value(row_names[4]+"_value"))
 
-    for i in range(len(row_names)):
-        name = row_names[i]
-
-        # Some formatting...
-        if ", " in dpg.get_value(name+"_value"):
-            dat = dpg.get_value(name+"_value").split(", ")
-            dat = f"{dat[0]}, {dat[1]}"
-        else:
-            dat = dpg.get_value(name+"_value")
-        obs_data.append(f"{name}: {dat}\n")
-    obs_data.append("Data,Observer frequency,Radial velocity\n")
-
+    # Create observation
     file_name = dpg.get_value("analysis_file_path")[:-4]+"_EDITED.txt"
-    new_obs = Observation(file_name)
-    new_obs.writeObservationFile(obs_data=obs_data, data=ydata, obs_freqs=xdata, radial_vel=vel)
+    new_obs = Observation(path=file_name, obs_time=obs_time, local_coord=obs_coord_azel,
+                          eq_coord=obs_coord_eq, gal_coord=obs_coord_gal, lsr_corr=lsr_cor,
+                          freqs=xdata, radial_vel=vel, data=ydata)
+
+    new_obs.writeObservationFile()

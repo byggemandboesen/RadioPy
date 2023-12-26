@@ -80,19 +80,14 @@ def runObservation():
     
     # Save data if wanted
     # TODO - Find out way to store collection parameters maybe
-    if config.getboolean("Spectral line", "save_data"):
-        obs_data = [
-            f"Observation time: {current_time}\n",
-            f"Local coordinates: {az},{alt}\n",
-            f"Equatorial coordinates: {eq_coords[0]},{eq_coords[1]}\n",
-            f"Galactic coordinates: {gal_coords[0]},{gal_coords[1]}\n",
-            f"LSR correction: {-lsr_correction}\n",
-            "Data,Observer frequency,Radial velocity\n"
-        ]
-        
+    if config.getboolean("Spectral line", "save_data"): 
+        # Create observation
         file_name = f"observations/{center_freq}_{formatted_time}.txt"
-        obs = Observation(file_name)
-        obs.writeObservationFile(obs_data=obs_data, data = data, obs_freqs=obs_freqs, radial_vel=radial_velocities)
+        obs = Observation(path=file_name, obs_time=current_time, local_coord=np.array([az, alt]),
+                          eq_coord=np.array(eq_coords), gal_coord=np.array(gal_coords), lsr_corr=-lsr_correction,
+                          freqs = obs_freqs, radial_vel=radial_velocities, data=data)
+
+        obs.writeObservationFile()
 
 
 def collectData(sdr: SDR, fft_num: int, n_bins: int) -> tuple:
@@ -122,15 +117,10 @@ def collectData(sdr: SDR, fft_num: int, n_bins: int) -> tuple:
     sdr.stopStream()
 
     # Replace bad samples lost from sample drops etc.
-    # TODO Fix scenario where dropped sample is either first or last
-    # TODO - Test new fix
-    # This is especially an issue with HackRF at high sample rates
     idx = np.where(data==-np.inf)
     if np.size(idx) > 0:
         data[idx] = np.interp(freqs[idx], freqs, data)
-        # for bad_sample in idx:
-        #     data[bad_sample] = (data[bad_sample-1]+data[bad_sample+1])/2
         print("Bad samples replaced at:")
-        print(idx)
+        print(idx[0])
 
     return freqs, data
