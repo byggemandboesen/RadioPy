@@ -92,7 +92,6 @@ class GroundStation:
         self.TIME = Time(time)
         self.lsr_correct = lsr_correct
 
-    
     def freqToVel(self, rest_freq, freq) -> float:
         '''
         Compute radial velocity from frequency
@@ -105,7 +104,6 @@ class GroundStation:
 
         return radial_vel.value
 
-
     def velToFreq(self, rest_freq, radial_vel) -> float:
         '''
         Compute frequency from radial velocity
@@ -117,7 +115,6 @@ class GroundStation:
         freq = measured.to(u.Hz,equivalencies=spectral_freq)
 
         return freq.value
-    
 
     def observerFreqToRest(self, freqs: "np.ndarray | float", redshift: float) -> "np.ndarray | float":
         '''
@@ -125,13 +122,11 @@ class GroundStation:
         '''
         return freqs*(1+redshift)
 
-
     def restFreqToObserver(self, freqs: "np.ndarray | float", redshift: float) -> "np.ndarray | float":
         '''
         Convert rest frame frequency to observer frequency
         '''
         return freqs/(1+redshift)
-
 
     def getLSRCorrection(self, ra, dec) -> float:
         '''

@@ -1,3 +1,5 @@
+import os
+import shutil
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -6,7 +8,7 @@ import ui.config_callbacks as CB
 from core.ground_station import Antenna, GroundStation
 from core.soapy import SDR
 import core.dsp as DSP
-from core.observation import Observation
+from core.observation import Observation, ObservationInfo, ObservationData
 from plot import plotData
 
 def runObservation():
@@ -27,10 +29,10 @@ def runObservation():
     use_eq_coords = config.getboolean("Ground station", "use_eq_coords")
     LO_freq = config.getfloat("Ground station", "lo_freq")
 
-    ANTENNA = Antenna(az, alt, ra, dec, use_eq_coords, LO_freq)
+    antenna = Antenna(az, alt, ra, dec, use_eq_coords, LO_freq)
     current_time = datetime.utcnow()
     formatted_time = current_time.strftime("%d_%m_%Y_%H_%M_%S")
-    GS = GroundStation(lat, lon, elev, current_time, lsr_correct, ANTENNA)
+    gs = GroundStation(lat, lon, elev, current_time, lsr_correct, antenna)
 
     
     # Configure SDR
@@ -58,36 +60,37 @@ def runObservation():
     if smoothing > 0:
         data = DSP.applySmoothing(bins = data, num = smoothing)
 
-    autocal = config.getboolean("Spectral line", "autocal")
-    if autocal:
-        cal_method = config.getboolean("Spectral line", "cal_method")
-
+    background_cal = config.getboolean("Spectral line", "background_cal")
+    if background_cal:
         # TODO - Get cal file path, init Observation, retrieve data axis and perform cal
-        
+        pass
 
     # Get antenna sky coordinates
-    eq_coords = ANTENNA.getEquatorialCoordinates(GS)
-    gal_coords = ANTENNA.getGalacticCoordinates(GS)
+    eq_coords = antenna.getEquatorialCoordinates(gs)
+    gal_coords = antenna.getGalacticCoordinates(gs)
 
     # Calculate radial velocities and correct for LSR if desired
-    lsr_correction = GS.getLSRCorrection(ra = eq_coords[0], dec = eq_coords[1]) if lsr_correct else 0
-    radial_velocities = np.subtract([GS.freqToVel(rest_freq = restfreq, freq = freq) for freq in obs_freqs], lsr_correction)
+    lsr_correction = gs.getLSRCorrection(ra = eq_coords[0], dec = eq_coords[1])
+    radial_velocities = np.subtract([gs.freqToVel(rest_freq = restfreq, freq = freq) for freq in obs_freqs], lsr_correction)
 
     # Finally, plot the data
     y_limits = (config.getfloat("Spectral line", "y_min"), config.getfloat("Spectral line", "y_max"))
     plotData(data=data, obs_freq=obs_freqs, radial_vel=radial_velocities, time=formatted_time, plot_limits=y_limits)
 
-    
+    out_dir = config.get("Spectral line", "output_dir")
+    out_dir += "" if out_dir[-1] == "/" or out_dir[-1] == "\\" else "/"
     # Save data if wanted
-    # TODO - Find out way to store collection parameters maybe
-    if config.getboolean("Spectral line", "save_data"): 
-        # Create observation
-        file_name = f"observations/{center_freq}_{formatted_time}.txt"
-        obs = Observation(path=file_name, obs_time=current_time, local_coord=np.array([az, alt]),
-                          eq_coord=np.array(eq_coords), gal_coord=np.array(gal_coords), lsr_corr=-lsr_correction,
-                          freqs = obs_freqs, radial_vel=radial_velocities, data=data)
+    if config.getboolean("Spectral line", "save_data"):
+        obs_name = f"{center_freq}_{formatted_time}"
 
-        obs.writeObservationFile()
+        # Create observation
+        obs = Observation(dir = out_dir+obs_name+"/")
+        obs.writeInfo(ground_station=gs, antenna=antenna, sdr=sdr)
+        obs.writeData(fname=obs_name, frequency=obs_freqs, radial_velocity=radial_velocities, data=data)
+        obs.plotData()
+
+        # Copy config to observation folder
+        shutil.copyfile("config.ini", out_dir+obs_name+"/"+"observation_config.ini")
 
 
 def collectData(sdr: SDR, fft_num: int, n_bins: int) -> tuple:
@@ -101,15 +104,13 @@ def collectData(sdr: SDR, fft_num: int, n_bins: int) -> tuple:
     '''
     # Generate list with frequencies
     freqs = np.linspace(sdr.getFrequency()-sdr.getSampleRate()/2, sdr.getFrequency()+sdr.getSampleRate()/2, n_bins)
-    tmp_bins = np.empty(n_bins, dtype = np.complex64)
     data = np.zeros(n_bins, dtype = np.float16)
     sdr.startStream()
     try:
         for i in range(fft_num):
-            tmp_bins = sdr.readFromStream()
-            data = data+DSP.doFFT(bins = tmp_bins, n_bins = n_bins)
+            data = data+DSP.doFFT(bins = sdr.readFromStream(), n_bins = n_bins)
             
-        data = data/fft_num
+        data = 10*np.log10(data/fft_num)
     except:
         print("Issue when reading bins... Please try again")
         quit()

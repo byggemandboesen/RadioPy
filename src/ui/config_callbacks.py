@@ -25,8 +25,8 @@ DEFAULT_PARAM = {
     "y_min": 0.0,
     "y_max": 0.0,
     "save_data": True,
-    "autocal": False,
-    "cal_method": "Autocalibrate"
+    "output_dir": "observations/",
+    "background_cal": False,
 }
 
 
@@ -78,8 +78,8 @@ def applyDefaultParameters():
     dpg.set_value("y_min", DEFAULT_PARAM["y_min"])
     dpg.set_value("y_max", DEFAULT_PARAM["y_max"])
     dpg.set_value("save_data", DEFAULT_PARAM["save_data"])
-    dpg.set_value("auto_calibrate_observation", DEFAULT_PARAM["autocal"])
-    dpg.set_value("calibration_method", DEFAULT_PARAM["cal_method"])
+    dpg.set_value("output_dir", DEFAULT_PARAM["output_dir"])
+    dpg.set_value("calibrate_background", DEFAULT_PARAM["background_cal"])
 
 
 def updateParameters():
@@ -114,8 +114,8 @@ def updateParameters():
     dpg.set_value("y_min", config.getfloat("Spectral line", "y_min"))
     dpg.set_value("y_max", config.getfloat("Spectral line", "y_max"))
     dpg.set_value("save_data", config.getboolean("Spectral line", "save_data"))
-    dpg.set_value("auto_calibrate_observation", config.getboolean("Spectral line", "autocal"))
-    dpg.set_value("calibration_method", config.get("Spectral line", "cal_method"))
+    dpg.set_value("output_dir", config.get("Spectral line", "output_dir"))
+    dpg.set_value("calibrate_background", config.getboolean("Spectral line", "background_cal"))
 
 
 def applyParameters():
@@ -149,9 +149,8 @@ def applyParameters():
     config.set("Spectral line", "y_min", str(round(dpg.get_value("y_min"), 9)))
     config.set("Spectral line", "y_max", str(round(dpg.get_value("y_max"), 9)))
     config.set("Spectral line", "save_data", str(dpg.get_value("save_data")))
-    config.set("Spectral line", "autocal", str(dpg.get_value("auto_calibrate_observation")))
-    config.set("Spectral line", "cal_method", str(dpg.get_value("calibration_method")))
+    config.set("Spectral line", "output_dir", str(dpg.get_value("output_dir")))
+    config.set("Spectral line", "background_cal", str(dpg.get_value("calibrate_background")))
     
-
     with open('config.ini', 'w') as configfile:
         config.write(configfile)

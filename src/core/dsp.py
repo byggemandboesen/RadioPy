@@ -5,8 +5,7 @@ def doFFT(bins, n_bins: int):
     Perform FFT on the given bins
     '''
     PSD = (np.abs(np.fft.fft(bins))/n_bins)**2
-    PSD_log = 10.0*np.log10(PSD)
-    fft_bins = np.fft.fftshift(PSD_log)
+    fft_bins = np.fft.fftshift(PSD)
     return fft_bins
 
 

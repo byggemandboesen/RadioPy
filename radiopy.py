@@ -1,10 +1,12 @@
+import os
+import sys
+import argparse
 import numpy as np
-from datetime import datetime
-import argparse, json, sys, os
-import pandas as pd
+import dearpygui.dearpygui as dpg
 
 sys.path.append("src/")
 sys.dont_write_bytecode = True
+
 import ui.radiopy_ui as ui
 
 from spectral_line import runObservation
@@ -29,4 +31,7 @@ def main():
     quit()
 
 if __name__ == "__main__":
+    if not os.path.isdir("observations/"):
+        os.mkdir("observations/")
+
     main()
