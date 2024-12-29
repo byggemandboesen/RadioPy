@@ -119,14 +119,14 @@ class GroundStation:
         return freq.value
     
 
-    def observerFreqToRest(self, freqs: np.ndarray | float, redshift: float) -> np.ndarray | float:
+    def observerFreqToRest(self, freqs: "np.ndarray | float", redshift: float) -> "np.ndarray | float":
         '''
         Convert observed frequency to rest frame frequency
         '''
         return freqs*(1+redshift)
 
 
-    def restFreqToObserver(self, freqs: np.ndarray | float, redshift: float) -> np.ndarray | float:
+    def restFreqToObserver(self, freqs: "np.ndarray | float", redshift: float) -> "np.ndarray | float":
         '''
         Convert rest frame frequency to observer frequency
         '''

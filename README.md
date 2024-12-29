@@ -2,8 +2,10 @@
 A software solution for scientific radio astronomy with an SDR
 
 ## Installing
-RadioPy uses the python bindings for the SoapySDR environment.<br>
-To install these run the following in terminal:
+RadioPy uses the python bindings for the SoapySDR environment.<br> This section discribes the installation of Soapy and other dependencies for both Linux and Windows
+
+### Linux
+SoapySDR is installed through apt together with swig, which is required by the pothos environment.
 ```bash
 sudo apt install swig
 sudo apt install python3-soapysdr
@@ -20,13 +22,19 @@ To install the rest of the required packages, simply use pip.
 pip3 install -r requirements.txt
 ```
 
-### Windows (:cold_sweat:)
-Since RadioPy uses python bindings it should be cross platform, however, it may involve a lot of pain setting up the Soapy environment properly on Windows. For this reason, I will only point you to Soapy's own guide to [using/installing the python bindings](https://github.com/pothosware/SoapySDR/wiki/PythonSupport).
+### Windows
+Download the pothos environment following [the following link](https://downloads.myriadrf.org/builds/PothosSDR/). <br>
+Next, add ```<YOUR INSTALL PATH>\PothosSDR\bin``` to system path.
+
+### Additions
+Finally, at least on Windows, Soapy is only compatible with Python 3.9.
+
+Furthermore, run ```volk_profile``` for optimised performance.
 
 ## Usage
 The primary goal for RaioPy is to act as a simple, yet useful, tool for radioastronomy. This means it offers a way to perform observations of different radioastronomical spectral lines with numerous different SDR's.
 
-### Tested devices
+### Tested devices (Outdated list)
 | Device                  | Tested | Buggy | Remarks                                                                                                                              |
 |-------------------------|--------|-------|--------------------------------------------------------------------------------------------------------------------------------------|
 | RTL-SDR V3              | ✅      | No    | None                                                                                                                                 |
