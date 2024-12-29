@@ -8,14 +8,13 @@ import ui.config_callbacks as CB
 from core.ground_station import Antenna, GroundStation
 from core.soapy import SDR
 import core.dsp as DSP
-from core.observation import Observation, ObservationInfo, ObservationData
+from core.observation import Observation
 from plot import plotData
 
 def runObservation():
     # Load config
     config = CB.loadConfig()
     print("Running observation...")
-
 
     # Configure Antenna/ground station
     lat = config.getfloat("Ground station", "lat")
@@ -34,7 +33,6 @@ def runObservation():
     formatted_time = current_time.strftime("%d_%m_%Y_%H_%M_%S")
     gs = GroundStation(lat, lon, elev, current_time, lsr_correct, antenna)
 
-    
     # Configure SDR
     if config.get("SDR", "driver") == "none" or config.getint("SDR", "sample_rate") == 0:
         print("Please select a driver and sample rate first!")
@@ -54,7 +52,6 @@ def runObservation():
     sdr_freq = center_freq - LO_freq
     sdr = SDR(driver = driver, freq = sdr_freq, sample_rate = sample_rate, ppm_offset = PPM_offset, bins = n_bins)
 
-    
     # Collect data
     obs_freqs, data = collectData(sdr = sdr, fft_num = fft_num, n_bins = n_bins)
     if smoothing > 0:
@@ -73,13 +70,12 @@ def runObservation():
     lsr_correction = gs.getLSRCorrection(ra = eq_coords[0], dec = eq_coords[1])
     radial_velocities = np.subtract([gs.freqToVel(rest_freq = restfreq, freq = freq) for freq in obs_freqs], lsr_correction)
 
-    # Finally, plot the data
+    # Save data
     y_limits = (config.getfloat("Spectral line", "y_min"), config.getfloat("Spectral line", "y_max"))
-    plotData(data=data, obs_freq=obs_freqs, radial_vel=radial_velocities, time=formatted_time, plot_limits=y_limits)
-
     out_dir = config.get("Spectral line", "output_dir")
     out_dir += "" if out_dir[-1] == "/" or out_dir[-1] == "\\" else "/"
     # Save data if wanted
+    # TODO - maybe remove option of disabling saving data
     if config.getboolean("Spectral line", "save_data"):
         obs_name = f"{center_freq}_{formatted_time}"
 
@@ -87,7 +83,7 @@ def runObservation():
         obs = Observation(dir = out_dir+obs_name+"/")
         obs.writeInfo(ground_station=gs, antenna=antenna, sdr=sdr)
         obs.writeData(fname=obs_name, frequency=obs_freqs, radial_velocity=radial_velocities, data=data)
-        obs.plotData()
+        obs.plotData(fname=obs_name, plot_limits = y_limits)
 
         # Copy config to observation folder
         shutil.copyfile("config.ini", out_dir+obs_name+"/"+"observation_config.ini")
