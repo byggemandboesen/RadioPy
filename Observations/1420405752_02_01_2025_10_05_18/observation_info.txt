@@ -1,0 +1,5 @@
+Observation time (UTC): 2025-01-02 10:05:18.655200
+Horizontal coordinates (az,alt): 45.0, 78.0
+Equatorial coordinates (ra,dec): 284.02983571610605, 62.29100291799271
+Galactic coordinates (lon,lat): 92.52812817913048, 23.28090386117566
+LSR correction applied (km/s): 13.790420853050184

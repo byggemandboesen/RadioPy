@@ -1,6 +1,7 @@
 import dearpygui.dearpygui as dpg
 import numpy as np
 
+# TODO - Maybe remake into class
 
 def dataViewerWindow():
     '''
@@ -10,8 +11,8 @@ def dataViewerWindow():
         dpg.add_text("Data viewer")
 
         with dpg.plot(width=-1,height=-1, tag = "spectrum_plot", anti_aliased=True):
-            dpg.add_plot_axis(dpg.mvXAxis, label = "Frequency (Hz)", tag="x_axis")
-            dpg.add_plot_axis(dpg.mvYAxis, label = "Intensity (dB)", tag="y_axis")
+            dpg.add_plot_axis(dpg.mvXAxis, label = "Frequency (MHz)", tag="x_axis")
+            dpg.add_plot_axis(dpg.mvYAxis, label = "Intensity", tag="y_axis")
             dpg.add_plot_legend()
             
             # And then add data to plot

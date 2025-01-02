@@ -2,10 +2,11 @@ import sys, os
 import dearpygui.dearpygui as dpg
 
 # Import UI components
-import ui.tabs.spectral_line_ui as LINE_UI
-import ui.tabs.parameters as PARAM_UI
+# import ui.tabs.spectral_line_ui as LINE_UI
+from ui.tabs.spectral_line_ui import SpectralLineTab
+from ui.tabs.parameters import ParameterTab
+from ui.tabs.analysis import AnalysisTab
 import ui.tabs.editor as EDITOR_UI
-import ui.tabs.analysis as ANALYSIS_UI
 
 import ui.tabs.info as INFO
 import ui.dataviewer as DATAVIEWER
@@ -23,16 +24,17 @@ def runUI():
             with dpg.child_window(width=400):
                 with dpg.tab_bar(reorderable=True):
                     # General parameters/options
-                    PARAM_UI.parametersTab()
+                    ParameterTab()
                     
                     # Spectral line
-                    LINE_UI.spectralLineTab()
+                    # LINE_UI.spectralLineTab()
+                    SpectralLineTab()
 
                     # Editor (Consider merging editor with spectral line tab)
                     # EDITOR_UI.editorTab()
 
                     # Analysis
-                    ANALYSIS_UI.analysisTab()
+                    AnalysisTab()
 
                     # Info
                     INFO.infoTab()

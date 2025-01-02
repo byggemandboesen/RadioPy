@@ -25,7 +25,7 @@ DEFAULT_PARAM = {
     "y_min": 0.0,
     "y_max": 0.0,
     "save_data": True,
-    "output_dir": "observations/",
+    "output_dir": "Observations/",
     "background_cal": False,
 }
 

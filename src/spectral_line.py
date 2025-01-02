@@ -9,7 +9,6 @@ from core.ground_station import Antenna, GroundStation
 from core.soapy import SDR
 import core.dsp as DSP
 from core.observation import Observation
-from plot import plotData
 
 def runObservation():
     # Load config
@@ -72,7 +71,7 @@ def runObservation():
 
     # Save data
     y_limits = (config.getfloat("Spectral line", "y_min"), config.getfloat("Spectral line", "y_max"))
-    out_dir = config.get("Spectral line", "output_dir")
+    out_dir = "Observations/" if config.get("Spectral line", "output_dir") == "" else config.get("Spectral line", "output_dir")
     out_dir += "" if out_dir[-1] == "/" or out_dir[-1] == "\\" else "/"
     # Save data if wanted
     # TODO - maybe remove option of disabling saving data
@@ -82,8 +81,8 @@ def runObservation():
         # Create observation
         obs = Observation(dir = out_dir+obs_name+"/")
         obs.writeInfo(ground_station=gs, antenna=antenna, sdr=sdr)
-        obs.writeData(fname=obs_name, frequency=obs_freqs, radial_velocity=radial_velocities, data=data)
-        obs.plotData(fname=obs_name, plot_limits = y_limits)
+        obs.writeData(frequency=obs_freqs, radial_velocity=radial_velocities, data=data)
+        obs.plotData(plot_limits = y_limits)
 
         # Copy config to observation folder
         shutil.copyfile("config.ini", out_dir+obs_name+"/"+"observation_config.ini")

@@ -31,7 +31,7 @@ def main():
     quit()
 
 if __name__ == "__main__":
-    if not os.path.isdir("observations/"):
-        os.mkdir("observations/")
+    if not os.path.isdir("Observations/"):
+        os.mkdir("Observations/")
 
     main()

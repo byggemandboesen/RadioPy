@@ -22,11 +22,18 @@ def checkForZero(bins):
     return bins
 
 
-def applySmoothing(bins, num: int = 10):
+def applySmoothing(bins, num: int = 15):
     '''
     Perform median smoothing on the given bins
+
+    Smoothing factor must be odd number for padding to work
     '''
-    return np.convolve(bins, np.ones(num)/num, 'same')
+    if num%2==0:
+        print("Smoothing factor must be odd!")
+        return bins
+
+    padded = np.pad(bins, pad_width=int((num-1)/2), mode="reflect")
+    return np.convolve(padded, np.ones(num)/num, "valid")
 
 
 def correctSlant(bins):
