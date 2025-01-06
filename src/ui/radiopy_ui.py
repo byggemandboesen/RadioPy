@@ -16,22 +16,18 @@ import ui.ui_constants as UI_CONSTS
 # Run user interface
 def runUI():
     dpg.create_context()
-    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1400, height=800)
+    dpg.create_viewport(title='RadioPy - By Victor Boesen', width=1500, height=900)
     
     with dpg.window(label="Main window", no_title_bar=True, on_close=cleanupProcess) as main_window:
 
         with dpg.group(horizontal=True):
-            with dpg.child_window(width=400):
+            with dpg.child_window(width=450):
                 with dpg.tab_bar(reorderable=True):
                     # General parameters/options
                     ParameterTab()
                     
                     # Spectral line
-                    # LINE_UI.spectralLineTab()
                     SpectralLineTab()
-
-                    # Editor (Consider merging editor with spectral line tab)
-                    # EDITOR_UI.editorTab()
 
                     # Analysis
                     AnalysisTab()

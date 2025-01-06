@@ -1,9 +1,9 @@
 import dearpygui.dearpygui as dpg
 
-W_NUM_INP_SING_COL = -150
+W_NUM_INP_SING_COL = -140
 W_NUM_INP_DOUB_COL = 150
 
-W_TXT_INP = -150
+W_TXT_INP = -140
 
 H_COLL_HEAD_SPACER = 5
 

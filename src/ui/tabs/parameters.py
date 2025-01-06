@@ -50,9 +50,9 @@ class ParameterTab:
                 dpg.add_combo(available_drives, default_value="none" , label = "Driver", tag="driver", width = UI_CONSTS.W_NUM_INP_SING_COL, callback=self.selectedSDR)
                 
                 # SDR sample rates are added once device is selected
-                dpg.add_combo([], label = "Sample rate (MHz)", tag = "sample_rate", width = UI_CONSTS.W_NUM_INP_SING_COL) #, callback=updateTimeEstimate)
+                dpg.add_combo([], label = "Sample rate (Hz)", tag = "sample_rate", width = UI_CONSTS.W_NUM_INP_SING_COL) #, callback=updateTimeEstimate)
                 dpg.add_input_int(label = "PPM offset", default_value = 0, tag = "ppm_offset", width = UI_CONSTS.W_NUM_INP_SING_COL)
-                dpg.add_input_int(label="Center frequency (Hz)", width=UI_CONSTS.W_NUM_INP_SING_COL, default_value=1420405752, tag="frequency")
+                dpg.add_input_int(label="Center freq. (Hz)", width=UI_CONSTS.W_NUM_INP_SING_COL, default_value=1420405752, tag="frequency")
                 dpg.add_combo(label="Frequency presets", items=self.updateFrequency(), width=UI_CONSTS.W_TXT_INP, callback=self.updateFrequency, tag="freq_preset")
                 
 
