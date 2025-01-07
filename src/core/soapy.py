@@ -3,19 +3,6 @@ from SoapySDR import *
 
 import numpy as np
 
-
-def listDrivers() -> list:
-    '''
-    Retreive the available Soapy drivers.
-
-    The available drivers are returned as a list of strings
-    '''
-    soapy_drivers = [dict(item) for item in SoapySDR.Device.enumerate()]
-    driver_names = [driver["driver"] for driver in soapy_drivers if driver["driver"] != "audio"]
-    
-    return driver_names
-
-
 class SDR:
     def __init__(self, driver: str, freq: int = 1420405752, sample_rate: int = 1e6, ppm_offset: int = 0, bins: int = 4096):
         
@@ -25,13 +12,16 @@ class SDR:
         self.ppm_offset = ppm_offset
         self.bins = bins
         
+        # Initialize device and set automatic gain
         self.sdr = SoapySDR.Device(f"driver={driver}")
-        # Set automatic gain
         self.sdr.setGainMode(SOAPY_SDR_RX, 0, True)
+
+        # Configure other parameters
         self.setSampleRate(sample_rate)
         self.setFrequency(freq)
         self.setPPMOffset(ppm_offset)
-        
+
+                
         # Initialize variables for later use
         self.buffer = np.zeros(bins, dtype=np.complex64)
         # self.buffer = np.array([0]*bins, np.complex64)
@@ -91,6 +81,11 @@ class SDR:
         '''
         try: # sample_rate in self.getAvailableSampleRates():
             self.sdr.setSampleRate(SOAPY_SDR_RX, 0, sample_rate)
+            # Set bandwidth greater than sample rate
+            bws = self.getAvailableBandwidths()
+            if bws.size != 0:
+                bw = bws[bws>sample_rate].min()
+                self.setBandwidth(bandwidth=bw)
         except:
             print("Device does not support the selected sample rate!!")
             quit()
@@ -101,7 +96,29 @@ class SDR:
         '''
         return self.sdr.getSampleRate(SOAPY_SDR_RX, 0)
 
+
+    def getAvailableBandwidths(self) -> np.ndarray:
+        '''
+        List available bandwidth of device
+        '''
+        return np.array(self.sdr.listBandwidths(SOAPY_SDR_RX, 0))
+
+    def getBandwidth(self) -> float:
+        ''''
+        Return the current bandwidth
+        '''
+        return self.sdr.getBandwidth(SOAPY_SDR_RX, 0)
     
+    def setBandwidth(self, bandwidth) -> None:
+        '''
+        Set bandwidth of device if available
+        '''
+        try:
+            self.sdr.setBandwidth(SOAPY_SDR_RX, 0, bandwidth)
+        except:
+            print("Not able to set bandwidth")
+
+
     def setBins(self, bins: int) -> None:
         '''
         Set the number of bins collected to the buffer wehn streaming
