@@ -88,8 +88,9 @@ class Observation:
         secax = ax.twiny()
         
         # Plot spectrum and format ax
-        ax.step(self.FREQUENCY/10**6, self.DATA, color = "b", linewidth = 0.75, label = "Observed data")
-        ax.set(xlim=(self.FREQUENCY[0], self.FREQUENCY[-1]))
+        f = self.FREQUENCY/10**6
+        ax.step(f, self.DATA, color = "b", linewidth = 0.75, label = "Observed data")
+        ax.set(xlim=(f[0], f[-1]))
         secax.set(xlim=(self.RADIAL_VELOCITY[0], self.RADIAL_VELOCITY[-1]))
         ax.set_xlabel(r"Observer frame frequency [$MHz$]", fontsize = FS_label)
         secax.set_xlabel(r"Radial velocity [$Km/s$]", fontsize = FS_label)
